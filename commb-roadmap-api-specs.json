@@ -1,0 +1,4819 @@
+{
+    "components": {
+        "schemas": {
+            "ApplicableSegmentDto": {
+                "properties": {
+                    "DIRECTION": {
+                        "type": "string"
+                    },
+                    "GEOMETRY": {
+                        "type": "object"
+                    },
+                    "PED_SPEED": {
+                        "type": "number"
+                    },
+                    "PED_VOLUME": {
+                        "type": "number"
+                    },
+                    "SEGMENT": {
+                        "type": "string"
+                    },
+                    "STREET_NAME": {
+                        "type": "string"
+                    },
+                    "TOTAL_VOLUME": {
+                        "type": "number"
+                    },
+                    "VEH_SPEED": {
+                        "type": "number"
+                    },
+                    "VEH_VOLUME": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "SEGMENT",
+                    "GEOMETRY",
+                    "DIRECTION",
+                    "PED_VOLUME",
+                    "VEH_VOLUME",
+                    "TOTAL_VOLUME",
+                    "VEH_SPEED",
+                    "PED_SPEED",
+                    "STREET_NAME"
+                ],
+                "type": "object"
+            },
+            "AudienceDTO": {
+                "properties": {
+                    "condition": {
+                        "type": "object"
+                    },
+                    "field": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    },
+                    "not": {
+                        "type": "boolean"
+                    },
+                    "operator": {
+                        "type": "string"
+                    },
+                    "rules": {
+                        "items": {
+                            "$ref": "#/components/schemas/AudienceDTO"
+                        },
+                        "type": "array"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "AudienceProfileHTTPBody": {
+                "properties": {
+                    "face_ids": {
+                        "description": "Face ids as array of integers",
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array"
+                    },
+                    "rules": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RuleModelDehydratedDto"
+                            }
+                        ],
+                        "description": "Rules from syncfusion/query builder"
+                    }
+                },
+                "required": [
+                    "face_ids",
+                    "rules"
+                ],
+                "type": "object"
+            },
+            "AudienceProfileReachFrequencyHTTPBody": {
+                "properties": {
+                    "effective_frequency": {
+                        "description": "Effective Frequency",
+                        "type": "number"
+                    },
+                    "face_ids": {
+                        "description": "Face ids as an array of integers",
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array"
+                    },
+                    "rules": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RuleModelDehydratedDto"
+                            }
+                        ],
+                        "description": "Rules from syncfusion/query builder"
+                    },
+                    "weeks": {
+                        "description": "Weeks",
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "weeks",
+                    "effective_frequency",
+                    "face_ids",
+                    "rules"
+                ],
+                "type": "object"
+            },
+            "AudiencesDto": {
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "audience_type": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by_user": {
+                        "$ref": "#/components/schemas/PlanUser"
+                    },
+                    "data": {
+                        "$ref": "#/components/schemas/AudienceDTO"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "id",
+                    "created_at",
+                    "active",
+                    "created_by_user",
+                    "name",
+                    "audience_type"
+                ],
+                "type": "object"
+            },
+            "CalculationData": {
+                "properties": {
+                    "calculation_version": {
+                        "type": "string"
+                    },
+                    "commb_face_id": {
+                        "type": "number"
+                    },
+                    "data_version": {
+                        "type": "string"
+                    },
+                    "digital": {
+                        "$ref": "#/components/schemas/DigitalImpressionsData"
+                    },
+                    "last_updated_at": {
+                        "type": "string"
+                    },
+                    "static": {
+                        "$ref": "#/components/schemas/StaticCirculationData"
+                    }
+                },
+                "required": [
+                    "calculation_version",
+                    "data_version",
+                    "commb_face_id",
+                    "last_updated_at",
+                    "static",
+                    "digital"
+                ],
+                "type": "object"
+            },
+            "CampaignPlanDto": {
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "campaign_id": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "plan": {
+                        "$ref": "#/components/schemas/PlanDTO"
+                    },
+                    "plan_name": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "campaign_id",
+                    "created_at",
+                    "plan",
+                    "active",
+                    "created_by",
+                    "plan_name"
+                ],
+                "type": "object"
+            },
+            "CartoDto": {
+                "properties": {
+                    "features": {
+                        "items": {
+                            "$ref": "#/components/schemas/Feature"
+                        },
+                        "type": "array"
+                    },
+                    "type": {
+                        "enum": [
+                            "FeatureCollection"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "type",
+                    "features"
+                ],
+                "type": "object"
+            },
+            "CartoMapData": {
+                "properties": {
+                    "geoJsonData": {
+                        "$ref": "#/components/schemas/GeoJsonDto"
+                    }
+                },
+                "required": [
+                    "geoJsonData"
+                ],
+                "type": "object"
+            },
+            "CartoPoiData": {
+                "properties": {
+                    "geoJsonData": {
+                        "$ref": "#/components/schemas/GeoJsonDto"
+                    }
+                },
+                "required": [
+                    "geoJsonData"
+                ],
+                "type": "object"
+            },
+            "CartoQuery": {
+                "properties": {
+                    "in": {
+                        "$ref": "#/components/schemas/In"
+                    }
+                },
+                "required": [
+                    "in"
+                ],
+                "type": "object"
+            },
+            "CirculationData": {
+                "properties": {
+                    "pedestrian": {
+                        "$ref": "#/components/schemas/WeeklyImpression"
+                    },
+                    "total": {
+                        "$ref": "#/components/schemas/WeeklyImpression"
+                    },
+                    "vehicular": {
+                        "$ref": "#/components/schemas/WeeklyImpression"
+                    }
+                },
+                "required": [
+                    "total",
+                    "vehicular",
+                    "pedestrian"
+                ],
+                "type": "object"
+            },
+            "CmaCaIdDto": {
+                "properties": {
+                    "ca_cma_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "ca_cma_name"
+                ],
+                "type": "object"
+            },
+            "CmaCsdDTO": {
+                "properties": {
+                    "ca_cma_name": {
+                        "type": "string"
+                    },
+                    "cma_ca_id": {
+                        "type": "number"
+                    },
+                    "csd_name": {
+                        "type": "string"
+                    },
+                    "csduid": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "cma_ca_id",
+                    "ca_cma_name",
+                    "csduid",
+                    "csd_name"
+                ],
+                "type": "object"
+            },
+            "CommentDto": {
+                "properties": {
+                    "attachment": {
+                        "type": "object"
+                    },
+                    "comment_data": {
+                        "type": "object"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "task_id": {
+                        "type": "number"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/CommentUser"
+                    }
+                },
+                "required": [
+                    "id",
+                    "task_id",
+                    "created_by",
+                    "comment_data",
+                    "attachment",
+                    "created_at",
+                    "updated_at",
+                    "user"
+                ],
+                "type": "object"
+            },
+            "CommentUser": {
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "first_name",
+                    "last_name"
+                ],
+                "type": "object"
+            },
+            "CreateAudienceDto": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/AudienceDTO"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "type": "object"
+            },
+            "CreateCommentDto": {
+                "properties": {
+                    "attachment": {
+                        "type": "object"
+                    },
+                    "comment_data": {
+                        "type": "object"
+                    },
+                    "task_id": {
+                        "type": "number"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/CommentUser"
+                    }
+                },
+                "required": [
+                    "task_id",
+                    "comment_data",
+                    "attachment",
+                    "user"
+                ],
+                "type": "object"
+            },
+            "CreateInventoryDto": {
+                "properties": {
+                    "commb_location_id": {
+                        "type": "number"
+                    },
+                    "external_face_numeric": {
+                        "type": "string"
+                    },
+                    "facing_direction": {
+                        "type": "string"
+                    },
+                    "illumination_from": {
+                        "maximum": 24,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "illumination_status": {
+                        "type": "string"
+                    },
+                    "illumination_to": {
+                        "maximum": 24,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "is_trio": {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "media_assets": {
+                        "type": "string"
+                    },
+                    "num_of_spots": {
+                        "type": "number"
+                    },
+                    "organizationId": {
+                        "type": "number"
+                    },
+                    "placing": {
+                        "type": "string"
+                    },
+                    "product_group_id": {
+                        "type": "number"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "spot_time": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "external_face_numeric",
+                    "commb_location_id",
+                    "product_id",
+                    "product_group_id",
+                    "facing_direction",
+                    "illumination_status",
+                    "illumination_from",
+                    "illumination_to",
+                    "is_trio",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "CreateLocationDto": {
+                "properties": {
+                    "bearing": {
+                        "enum": [
+                            "AT",
+                            "S/O",
+                            "W/O",
+                            "E/O",
+                            "N/O",
+                            "OPP",
+                            "AND"
+                        ],
+                        "type": "string"
+                    },
+                    "ca_cma_name": {
+                        "type": "string"
+                    },
+                    "cma_ca_type": {
+                        "maxLength": 3,
+                        "type": "string"
+                    },
+                    "cross_artery": {
+                        "maxLength": 150,
+                        "type": "string"
+                    },
+                    "csd_name": {
+                        "type": "string"
+                    },
+                    "description": {
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "distance": {
+                        "type": "number"
+                    },
+                    "external_location_numeric": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "faces": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "location_name": {
+                        "maxLength": 1000,
+                        "type": "string"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    },
+                    "primary_artery": {
+                        "maxLength": 150,
+                        "type": "string"
+                    },
+                    "primary_side": {
+                        "enum": [
+                            "NS",
+                            "WS",
+                            "ES",
+                            "SS",
+                            "NWC",
+                            "NEC",
+                            "SWC",
+                            "SEC"
+                        ],
+                        "type": "string"
+                    },
+                    "province": {
+                        "maxLength": 2,
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "external_location_numeric",
+                    "latitude",
+                    "longitude",
+                    "location_name",
+                    "ca_cma_name",
+                    "cma_ca_type",
+                    "csd_name"
+                ],
+                "type": "object"
+            },
+            "CreateMarketDto": {
+                "properties": {
+                    "market_key": {
+                        "type": "string"
+                    },
+                    "market_name": {
+                        "type": "string"
+                    },
+                    "parent_market_key": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "market_key",
+                    "market_name",
+                    "parent_market_key"
+                ],
+                "type": "object"
+            },
+            "CreateOOHProductDTO": {
+                "properties": {
+                    "ooh_product_name": {
+                        "type": "string"
+                    },
+                    "ooh_product_name_fr": {
+                        "type": "string"
+                    },
+                    "organization_id": {
+                        "type": "number"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "ooh_product_name",
+                    "ooh_product_name_fr",
+                    "organization_id",
+                    "product_id"
+                ],
+                "type": "object"
+            },
+            "CreateOrganizationDto": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "type",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "CreateProductDTO": {
+                "properties": {
+                    "buffer_radius": {
+                        "type": "number"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "is_digital": {
+                        "type": "boolean"
+                    },
+                    "product_group_id": {
+                        "type": "number"
+                    },
+                    "product_name": {
+                        "type": "string"
+                    },
+                    "product_name_fr": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "product_name",
+                    "product_name_fr",
+                    "buffer_radius",
+                    "size",
+                    "product_group_id",
+                    "is_digital",
+                    "created_by"
+                ],
+                "type": "object"
+            },
+            "CreateRoleDTO": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "CreateSegmentDto": {
+                "properties": {
+                    "commb_face_id": {
+                        "type": "number"
+                    },
+                    "distance": {
+                        "type": "number"
+                    },
+                    "from_segment_id": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "from_to_segments": {
+                        "type": "string"
+                    },
+                    "pct_traffic": {
+                        "type": "number"
+                    },
+                    "polyline": {
+                        "items": {
+                            "$ref": "#/components/schemas/Point"
+                        },
+                        "type": "array"
+                    },
+                    "to_segment_id": {
+                        "type": "string"
+                    },
+                    "traffic_type": {
+                        "enum": [
+                            "P",
+                            "V",
+                            "B"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "commb_face_id",
+                    "from_segment_id",
+                    "traffic_type",
+                    "pct_traffic"
+                ],
+                "type": "object"
+            },
+            "CreateTaskInput": {
+                "properties": {
+                    "faceOrLocationId": {
+                        "type": "number"
+                    },
+                    "task_type": {
+                        "enum": [
+                            "create_face",
+                            "create_location",
+                            "generic_request",
+                            "update_face",
+                            "update_location"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "task_type"
+                ],
+                "type": "object"
+            },
+            "CreateUserDto": {
+                "properties": {
+                    "email_address": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "last_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "organization": {
+                        "description": "Foreign key, associates to id from organizations",
+                        "type": "number"
+                    },
+                    "status": {
+                        "default": "Active",
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "maxLength": 10,
+                        "type": "string"
+                    },
+                    "user_role": {
+                        "description": "Foreign key, associates to id from roles",
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email_address",
+                    "user_role",
+                    "organization",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "CreateUserMarketAccessDto": {
+                "properties": {
+                    "market_id": {
+                        "type": "number"
+                    },
+                    "user_id": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "market_id",
+                    "user_id"
+                ],
+                "type": "object"
+            },
+            "CreateViewManagerDto": {
+                "properties": {},
+                "type": "object"
+            },
+            "CsdUidDto": {
+                "properties": {
+                    "csd_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "csd_name"
+                ],
+                "type": "object"
+            },
+            "DailyImpression": {
+                "properties": {
+                    "all": {
+                        "type": "number"
+                    },
+                    "hr_01": {
+                        "type": "number"
+                    },
+                    "hr_02": {
+                        "type": "number"
+                    },
+                    "hr_03": {
+                        "type": "number"
+                    },
+                    "hr_04": {
+                        "type": "number"
+                    },
+                    "hr_05": {
+                        "type": "number"
+                    },
+                    "hr_06": {
+                        "type": "number"
+                    },
+                    "hr_07": {
+                        "type": "number"
+                    },
+                    "hr_08": {
+                        "type": "number"
+                    },
+                    "hr_09": {
+                        "type": "number"
+                    },
+                    "hr_10": {
+                        "type": "number"
+                    },
+                    "hr_11": {
+                        "type": "number"
+                    },
+                    "hr_12": {
+                        "type": "number"
+                    },
+                    "hr_13": {
+                        "type": "number"
+                    },
+                    "hr_14": {
+                        "type": "number"
+                    },
+                    "hr_15": {
+                        "type": "number"
+                    },
+                    "hr_16": {
+                        "type": "number"
+                    },
+                    "hr_17": {
+                        "type": "number"
+                    },
+                    "hr_18": {
+                        "type": "number"
+                    },
+                    "hr_19": {
+                        "type": "number"
+                    },
+                    "hr_20": {
+                        "type": "number"
+                    },
+                    "hr_21": {
+                        "type": "number"
+                    },
+                    "hr_22": {
+                        "type": "number"
+                    },
+                    "hr_23": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "all",
+                    "hr_01",
+                    "hr_02",
+                    "hr_03",
+                    "hr_04",
+                    "hr_05",
+                    "hr_06",
+                    "hr_07",
+                    "hr_08",
+                    "hr_09",
+                    "hr_10",
+                    "hr_11",
+                    "hr_12",
+                    "hr_13",
+                    "hr_14",
+                    "hr_15",
+                    "hr_16",
+                    "hr_17",
+                    "hr_18",
+                    "hr_19",
+                    "hr_20",
+                    "hr_21",
+                    "hr_22",
+                    "hr_23"
+                ],
+                "type": "object"
+            },
+            "DigitalImpressionsData": {
+                "properties": {
+                    "screen_impressions": {
+                        "$ref": "#/components/schemas/CirculationData"
+                    },
+                    "spot_ad_play_impressions": {
+                        "$ref": "#/components/schemas/CirculationData"
+                    }
+                },
+                "required": [
+                    "screen_impressions",
+                    "spot_ad_play_impressions"
+                ],
+                "type": "object"
+            },
+            "EditableLocationDto": {
+                "properties": {
+                    "bearing": {
+                        "enum": [
+                            "AT",
+                            "S/O",
+                            "W/O",
+                            "E/O",
+                            "N/O",
+                            "OPP",
+                            "AND"
+                        ],
+                        "type": "string"
+                    },
+                    "ca_cma_name": {
+                        "type": "string"
+                    },
+                    "cma_ca": {
+                        "type": "number"
+                    },
+                    "cma_ca_id": {
+                        "$ref": "#/components/schemas/CmaCaIdDto"
+                    },
+                    "cma_ca_type": {
+                        "maxLength": 3,
+                        "type": "string"
+                    },
+                    "commb_location_id": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "cross_artery": {
+                        "maxLength": 150,
+                        "type": "string"
+                    },
+                    "csd": {
+                        "type": "number"
+                    },
+                    "csd_name": {
+                        "type": "string"
+                    },
+                    "csduid": {
+                        "$ref": "#/components/schemas/CsdUidDto"
+                    },
+                    "description": {
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "distance": {
+                        "type": "number"
+                    },
+                    "external_location_numeric": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "geographic_code": {
+                        "type": "number"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "location_name": {
+                        "maxLength": 1000,
+                        "type": "string"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    },
+                    "operator_id": {
+                        "description": "Foreign key, associates to id from organizations",
+                        "type": "number"
+                    },
+                    "primary_artery": {
+                        "maxLength": 150,
+                        "type": "string"
+                    },
+                    "primary_side": {
+                        "enum": [
+                            "NS",
+                            "WS",
+                            "ES",
+                            "SS",
+                            "NWC",
+                            "NEC",
+                            "SWC",
+                            "SEC"
+                        ],
+                        "type": "string"
+                    },
+                    "province": {
+                        "maxLength": 2,
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "timezone_id": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "EditableUserDto": {
+                "properties": {
+                    "email_address": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "default": "Active",
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "maxLength": 10,
+                        "type": "string"
+                    },
+                    "user_role": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "email_address",
+                    "status",
+                    "user_role"
+                ],
+                "type": "object"
+            },
+            "ExportInventory": {
+                "properties": {
+                    "url": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "url"
+                ],
+                "type": "object"
+            },
+            "FaceCalculations": {
+                "properties": {
+                    "calculation_data": {
+                        "$ref": "#/components/schemas/CalculationData"
+                    },
+                    "calculation_version": {
+                        "type": "string"
+                    },
+                    "commb_face_id": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "commb_face_id",
+                    "calculation_version",
+                    "calculation_data"
+                ],
+                "type": "object"
+            },
+            "Feature": {
+                "properties": {
+                    "geometry": {
+                        "$ref": "#/components/schemas/Geometry"
+                    },
+                    "properties": {
+                        "type": "object"
+                    },
+                    "type": {
+                        "enum": [
+                            "Feature"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "geometry",
+                    "properties",
+                    "type"
+                ],
+                "type": "object"
+            },
+            "FetchCartoDataInput": {
+                "properties": {
+                    "geometry": {
+                        "type": "object"
+                    },
+                    "inventory_facing_direction": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "inventory_illumination_status": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "location_cma_ca_name": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "location_csd_name": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "location_province": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "media_types_media_type_name": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "organizations_name": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "poi": {
+                        "$ref": "#/components/schemas/LocationInventoryPoiFilters"
+                    },
+                    "products_is_digital": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "products_product_name": {
+                        "$ref": "#/components/schemas/CartoQuery"
+                    },
+                    "viewport": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object"
+            },
+            "FilterQueryReponseDto": {
+                "properties": {
+                    "markets": {
+                        "items": {
+                            "$ref": "#/components/schemas/MarketsFilterResultsQueryResponse"
+                        },
+                        "type": "array"
+                    },
+                    "organizations": {
+                        "items": {
+                            "$ref": "#/components/schemas/OrganizationFilterResultsQueryResponse"
+                        },
+                        "type": "array"
+                    },
+                    "products": {
+                        "items": {
+                            "$ref": "#/components/schemas/ProductsFilterQueryResponse"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "products",
+                    "markets",
+                    "organizations"
+                ],
+                "type": "object"
+            },
+            "FlightingObjectivesResponse": {
+                "properties": {
+                    "applicable_weeks": {
+                        "items": {
+                            "type": "boolean"
+                        },
+                        "type": "array"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "uuid": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "GeoJsonDto": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/CartoDto"
+                    },
+                    "format": {
+                        "default": "geojson",
+                        "enum": [
+                            "geojson"
+                        ],
+                        "type": "string"
+                    },
+                    "schema": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "data",
+                    "schema"
+                ],
+                "type": "object"
+            },
+            "Geometry": {
+                "properties": {
+                    "coordinates": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array"
+                    },
+                    "type": {
+                        "default": "Point",
+                        "enum": [
+                            "Point"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "coordinates",
+                    "type"
+                ],
+                "type": "object"
+            },
+            "GetViewManagerDto": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "poi_data": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "text": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "number"
+                    },
+                    "value": {
+                        "type": "string"
+                    },
+                    "view_data": {
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "text",
+                    "value",
+                    "id",
+                    "view_data",
+                    "user_id",
+                    "status",
+                    "created_at",
+                    "poi_data"
+                ],
+                "type": "object"
+            },
+            "ImportFileDto": {
+                "properties": {
+                    "file": {
+                        "format": "binary",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "file"
+                ],
+                "type": "object"
+            },
+            "In": {
+                "properties": {
+                    "owner": {
+                        "type": "string"
+                    },
+                    "values": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "values",
+                    "owner"
+                ],
+                "type": "object"
+            },
+            "InventoryDto": {
+                "properties": {
+                    "commb_face_id": {
+                        "type": "number"
+                    },
+                    "commb_location_id": {
+                        "type": "number"
+                    },
+                    "external_face_numeric": {
+                        "type": "string"
+                    },
+                    "facing_direction": {
+                        "type": "string"
+                    },
+                    "illumination_from": {
+                        "maximum": 24,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "illumination_status": {
+                        "type": "string"
+                    },
+                    "illumination_to": {
+                        "maximum": 24,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "is_trio": {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "media_assets": {
+                        "type": "string"
+                    },
+                    "num_of_spots": {
+                        "type": "number"
+                    },
+                    "organizationId": {
+                        "type": "number"
+                    },
+                    "organizationName": {
+                        "type": "string"
+                    },
+                    "physical_status": {
+                        "type": "string"
+                    },
+                    "placing": {
+                        "type": "string"
+                    },
+                    "product_group_id": {
+                        "type": "number"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "spot_time": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "commb_face_id",
+                    "external_face_numeric",
+                    "commb_location_id",
+                    "product_id",
+                    "product_group_id",
+                    "facing_direction",
+                    "illumination_status",
+                    "illumination_from",
+                    "illumination_to",
+                    "is_trio",
+                    "status",
+                    "organizationName"
+                ],
+                "type": "object"
+            },
+            "LocationData": {
+                "properties": {
+                    "cma_ca": {
+                        "format": "int64",
+                        "type": "number"
+                    },
+                    "cma_ca_type": {
+                        "type": "string"
+                    },
+                    "commb_location_id": {
+                        "format": "int64",
+                        "type": "number"
+                    },
+                    "csd": {
+                        "format": "int64",
+                        "type": "number"
+                    },
+                    "latitude": {
+                        "format": "decimal",
+                        "type": "number"
+                    },
+                    "longitude": {
+                        "format": "decimal",
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "commb_location_id",
+                    "cma_ca",
+                    "cma_ca_type",
+                    "csd",
+                    "latitude",
+                    "longitude"
+                ],
+                "type": "object"
+            },
+            "LocationDto": {
+                "properties": {
+                    "bearing": {
+                        "enum": [
+                            "AT",
+                            "S/O",
+                            "W/O",
+                            "E/O",
+                            "N/O",
+                            "OPP",
+                            "AND"
+                        ],
+                        "type": "string"
+                    },
+                    "ca_cma_name": {
+                        "type": "string"
+                    },
+                    "cma_ca": {
+                        "type": "number"
+                    },
+                    "cma_ca_id": {
+                        "$ref": "#/components/schemas/CmaCaIdDto"
+                    },
+                    "cma_ca_type": {
+                        "maxLength": 3,
+                        "type": "string"
+                    },
+                    "commb_location_id": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "cross_artery": {
+                        "maxLength": 150,
+                        "type": "string"
+                    },
+                    "csd": {
+                        "type": "number"
+                    },
+                    "csd_name": {
+                        "type": "string"
+                    },
+                    "csduid": {
+                        "$ref": "#/components/schemas/CsdUidDto"
+                    },
+                    "description": {
+                        "maxLength": 255,
+                        "type": "string"
+                    },
+                    "distance": {
+                        "type": "number"
+                    },
+                    "external_location_numeric": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "geographic_code": {
+                        "type": "number"
+                    },
+                    "latitude": {
+                        "type": "number"
+                    },
+                    "location_name": {
+                        "maxLength": 1000,
+                        "type": "string"
+                    },
+                    "longitude": {
+                        "type": "number"
+                    },
+                    "operator_id": {
+                        "description": "Foreign key, associates to id from organizations",
+                        "type": "number"
+                    },
+                    "primary_artery": {
+                        "maxLength": 150,
+                        "type": "string"
+                    },
+                    "primary_side": {
+                        "enum": [
+                            "NS",
+                            "WS",
+                            "ES",
+                            "SS",
+                            "NWC",
+                            "NEC",
+                            "SWC",
+                            "SEC"
+                        ],
+                        "type": "string"
+                    },
+                    "province": {
+                        "maxLength": 2,
+                        "type": "string"
+                    },
+                    "region": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "timezone_id": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "commb_location_id",
+                    "external_location_numeric",
+                    "location_name",
+                    "operator_id",
+                    "latitude",
+                    "longitude",
+                    "region",
+                    "cma_ca",
+                    "cma_ca_type",
+                    "geographic_code",
+                    "csd",
+                    "status",
+                    "created_by",
+                    "csd_name",
+                    "ca_cma_name",
+                    "updated_at",
+                    "created_at",
+                    "cma_ca_id",
+                    "csduid"
+                ],
+                "type": "object"
+            },
+            "LocationInventoryPoiFilters": {
+                "properties": {
+                    "brand": {
+                        "type": "string"
+                    },
+                    "category": {
+                        "type": "string"
+                    },
+                    "distance": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "MOPSelection": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "text": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "text"
+                ],
+                "type": "object"
+            },
+            "MOPSelectionsDTO": {
+                "properties": {
+                    "markets": {
+                        "items": {
+                            "$ref": "#/components/schemas/MOPSelection"
+                        },
+                        "type": "array"
+                    },
+                    "organizations": {
+                        "items": {
+                            "$ref": "#/components/schemas/MOPSelection"
+                        },
+                        "type": "array"
+                    },
+                    "products": {
+                        "items": {
+                            "$ref": "#/components/schemas/MOPSelection"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object"
+            },
+            "MarketDTO": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "market_key": {
+                        "type": "string"
+                    },
+                    "market_name": {
+                        "type": "string"
+                    },
+                    "parent_market_key": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "market_key",
+                    "market_name",
+                    "status",
+                    "parent_market_key",
+                    "created_at"
+                ],
+                "type": "object"
+            },
+            "MarketReponse": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "market": {
+                        "type": "string"
+                    },
+                    "operators": {
+                        "items": {
+                            "$ref": "#/components/schemas/OperatorResponse"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "market",
+                    "id"
+                ],
+                "type": "object"
+            },
+            "MarketsFilterResultsQueryResponse": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "market": {
+                        "type": "string"
+                    },
+                    "province": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "market",
+                    "province",
+                    "id"
+                ],
+                "type": "object"
+            },
+            "Mop": {
+                "properties": {
+                    "ooh-company": {
+                        "type": "string"
+                    },
+                    "product": {
+                        "type": "number"
+                    },
+                    "product_group": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "ooh-company",
+                    "product_group",
+                    "product"
+                ],
+                "type": "object"
+            },
+            "MopQueryResponseDto": {
+                "properties": {
+                    "markets": {
+                        "items": {
+                            "$ref": "#/components/schemas/MarketReponse"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "markets"
+                ],
+                "type": "object"
+            },
+            "MopQueryResultsDto": {
+                "properties": {
+                    "circulations_total": {
+                        "type": "number"
+                    },
+                    "face_count": {
+                        "type": "number"
+                    },
+                    "market": {
+                        "type": "string"
+                    },
+                    "market_id": {
+                        "type": "number"
+                    },
+                    "operator": {
+                        "type": "string"
+                    },
+                    "operator_id": {
+                        "type": "number"
+                    },
+                    "product": {
+                        "type": "string"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "market",
+                    "market_id",
+                    "product",
+                    "operator",
+                    "operator_id",
+                    "product_id",
+                    "face_count"
+                ],
+                "type": "object"
+            },
+            "MopReachFrequencyAudienceProfileTargets": {
+                "properties": {
+                    "markets": {
+                        "items": {
+                            "description": "Markets",
+                            "items": {
+                                "$ref": "#/components/schemas/MopReachFrequencyMarket"
+                            },
+                            "type": "array"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "markets"
+                ],
+                "type": "object"
+            },
+            "MopReachFrequencyMarket": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "market": {
+                        "type": "string"
+                    },
+                    "operators": {
+                        "items": {
+                            "$ref": "#/components/schemas/MopReachFrequencyOperator"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "id",
+                    "market",
+                    "operators"
+                ],
+                "type": "object"
+            },
+            "MopReachFrequencyObjectives": {
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "type",
+                    "value"
+                ],
+                "type": "object"
+            },
+            "MopReachFrequencyOperator": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "operator": {
+                        "type": "string"
+                    },
+                    "products": {
+                        "items": {
+                            "$ref": "#/components/schemas/MopReachFrequencyProduct"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "id",
+                    "operator",
+                    "products"
+                ],
+                "type": "object"
+            },
+            "MopReachFrequencyProduct": {
+                "properties": {
+                    "circulation": {
+                        "type": "number"
+                    },
+                    "face_count": {
+                        "type": "number"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "objectives": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/MopReachFrequencyObjectives"
+                            }
+                        ],
+                        "description": "Objectives"
+                    },
+                    "product": {
+                        "type": "string"
+                    },
+                    "weeks": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "id",
+                    "product",
+                    "face_count",
+                    "objectives",
+                    "circulation",
+                    "weeks"
+                ],
+                "type": "object"
+            },
+            "MopsAudienceProfileHTTPBody": {
+                "properties": {
+                    "market": {
+                        "description": "Market ID",
+                        "type": "number"
+                    },
+                    "mops": {
+                        "description": "Mops",
+                        "items": {
+                            "$ref": "#/components/schemas/Mop"
+                        },
+                        "type": "array"
+                    },
+                    "rules": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/RuleModelDehydratedDto"
+                            }
+                        ],
+                        "description": "Rules from syncfusion/query builder"
+                    }
+                },
+                "required": [
+                    "market",
+                    "mops",
+                    "rules"
+                ],
+                "type": "object"
+            },
+            "MopsAudienceProfileReachFrequencyHTTPBody": {
+                "properties": {
+                    "audience": {
+                        "description": "Audience Rules",
+                        "items": {
+                            "$ref": "#/components/schemas/RuleModelDehydratedDto"
+                        },
+                        "type": "array"
+                    },
+                    "mop": {
+                        "description": "Mop property. Ignored",
+                        "type": "object"
+                    },
+                    "targets": {
+                        "allOf": [
+                            {
+                                "$ref": "#/components/schemas/MopReachFrequencyAudienceProfileTargets"
+                            }
+                        ],
+                        "description": "Targets"
+                    }
+                },
+                "required": [
+                    "mop",
+                    "targets",
+                    "audience"
+                ],
+                "type": "object"
+            },
+            "OOHProductDTO": {
+                "properties": {
+                    "__typename": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "ooh_product_name": {
+                        "type": "string"
+                    },
+                    "ooh_product_name_fr": {
+                        "type": "string"
+                    },
+                    "organization_id": {
+                        "type": "number"
+                    },
+                    "product": {
+                        "$ref": "#/components/schemas/ProductDTO"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "id",
+                    "ooh_product_name",
+                    "ooh_product_name_fr",
+                    "organization_id",
+                    "product_id",
+                    "product",
+                    "created_by",
+                    "created_at",
+                    "__typename"
+                ],
+                "type": "object"
+            },
+            "ObjectivesResponse": {
+                "properties": {
+                    "type": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "OperatorResponse": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "operator": {
+                        "type": "string"
+                    },
+                    "products": {
+                        "items": {
+                            "$ref": "#/components/schemas/ProductResponse"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "operator",
+                    "id"
+                ],
+                "type": "object"
+            },
+            "OrganizationDto": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "OrganizationFilterResultsQueryResponse": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "organization": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "organization",
+                    "id"
+                ],
+                "type": "object"
+            },
+            "OrganizationUserDto": {
+                "properties": {
+                    "email_address": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email_address"
+                ],
+                "type": "object"
+            },
+            "PartnerFaceData": {
+                "properties": {
+                    "calculation_version": {
+                        "type": "string"
+                    },
+                    "commb_face_id": {
+                        "format": "int64",
+                        "type": "number"
+                    },
+                    "data_version": {
+                        "type": "string"
+                    },
+                    "facing_direction": {
+                        "enum": [
+                            "N",
+                            "NE",
+                            "NNE",
+                            "ENE",
+                            "E",
+                            "ESE",
+                            "SE",
+                            "SSE",
+                            "S",
+                            "SSW",
+                            "SW",
+                            "WSW",
+                            "W",
+                            "NWN",
+                            "NW",
+                            "NNW"
+                        ],
+                        "type": "string"
+                    },
+                    "illumination_from": {
+                        "format": "int64",
+                        "type": "number"
+                    },
+                    "illumination_to": {
+                        "format": "int64",
+                        "type": "number"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/LocationData"
+                    },
+                    "ooh_company_face_id": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "commb_face_id",
+                    "facing_direction",
+                    "status",
+                    "illumination_from",
+                    "illumination_to",
+                    "ooh_company_face_id",
+                    "calculation_version",
+                    "data_version",
+                    "updated_at",
+                    "location"
+                ],
+                "type": "object"
+            },
+            "PartnerFaceId": {
+                "properties": {
+                    "commb_face_id": {
+                        "format": "int64",
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "commb_face_id"
+                ],
+                "type": "object"
+            },
+            "PatchAudienceDto": {
+                "properties": {
+                    "data": {
+                        "$ref": "#/components/schemas/AudienceDTO"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PatchCampaignPlanDto": {
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "campaign_id": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "plan": {
+                        "$ref": "#/components/schemas/PlanDTO"
+                    },
+                    "plan_name": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "PatchInventoryDto": {
+                "properties": {
+                    "commb_location_id": {
+                        "type": "number"
+                    },
+                    "external_face_numeric": {
+                        "type": "string"
+                    },
+                    "facing_direction": {
+                        "type": "string"
+                    },
+                    "illumination_from": {
+                        "maximum": 24,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "illumination_status": {
+                        "type": "string"
+                    },
+                    "illumination_to": {
+                        "maximum": 24,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "is_trio": {
+                        "maximum": 1,
+                        "minimum": 0,
+                        "type": "number"
+                    },
+                    "media_assets": {
+                        "type": "string"
+                    },
+                    "num_of_spots": {
+                        "type": "number"
+                    },
+                    "organizationId": {
+                        "type": "number"
+                    },
+                    "placing": {
+                        "type": "string"
+                    },
+                    "product_group_id": {
+                        "type": "number"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "spot_time": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "PatchOOHProductDTO": {
+                "properties": {
+                    "__typename": {
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "ooh_product_name": {
+                        "type": "string"
+                    },
+                    "ooh_product_name_fr": {
+                        "type": "string"
+                    },
+                    "organization_id": {
+                        "type": "number"
+                    },
+                    "product": {
+                        "$ref": "#/components/schemas/ProductDTO"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "PatchOrganizationDto": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PatchProductDTO": {
+                "properties": {
+                    "__typename": {
+                        "type": "string"
+                    },
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "buffer_radius": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "is_digital": {
+                        "type": "boolean"
+                    },
+                    "product_group_id": {
+                        "type": "number"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "product_name": {
+                        "type": "string"
+                    },
+                    "product_name_fr": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "type": "object"
+            },
+            "PatchSegmentDto": {
+                "properties": {
+                    "distance": {
+                        "type": "number"
+                    },
+                    "from_to_segments": {
+                        "type": "string"
+                    },
+                    "pct_traffic": {
+                        "type": "number"
+                    },
+                    "polyline": {
+                        "items": {
+                            "$ref": "#/components/schemas/Point"
+                        },
+                        "type": "array"
+                    },
+                    "traffic_type": {
+                        "enum": [
+                            "P",
+                            "V",
+                            "B"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "PatchSegmentInput": {
+                "properties": {
+                    "compositeKeys": {
+                        "$ref": "#/components/schemas/SegmentCompositeKeyDto"
+                    },
+                    "segment": {
+                        "$ref": "#/components/schemas/PatchSegmentDto"
+                    }
+                },
+                "required": [
+                    "segment",
+                    "compositeKeys"
+                ],
+                "type": "object"
+            },
+            "PlanDTO": {
+                "properties": {
+                    "audience": {
+                        "$ref": "#/components/schemas/AudienceDTO"
+                    },
+                    "flighting": {
+                        "type": "boolean"
+                    },
+                    "mop": {
+                        "$ref": "#/components/schemas/MOPSelectionsDTO"
+                    },
+                    "selectedAudienceId": {
+                        "type": "number"
+                    },
+                    "selectedAudienceName": {
+                        "type": "string"
+                    },
+                    "targets": {
+                        "$ref": "#/components/schemas/MopQueryResponseDto"
+                    }
+                },
+                "type": "object"
+            },
+            "PlanUser": {
+                "properties": {
+                    "first_name": {
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "first_name",
+                    "last_name"
+                ],
+                "type": "object"
+            },
+            "PoiInput": {
+                "properties": {
+                    "categories": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "geometry": {
+                        "type": "object"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "sub_categories": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    },
+                    "viewport": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array"
+                    }
+                },
+                "type": "object"
+            },
+            "Point": {
+                "properties": {
+                    "lat": {
+                        "type": "number"
+                    },
+                    "lng": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "lat",
+                    "lng"
+                ],
+                "type": "object"
+            },
+            "ProductDTO": {
+                "properties": {
+                    "__typename": {
+                        "type": "string"
+                    },
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "buffer_radius": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "is_digital": {
+                        "type": "boolean"
+                    },
+                    "product_group_id": {
+                        "type": "number"
+                    },
+                    "product_id": {
+                        "type": "number"
+                    },
+                    "product_name": {
+                        "type": "string"
+                    },
+                    "product_name_fr": {
+                        "type": "string"
+                    },
+                    "size": {
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "product_id",
+                    "product_name",
+                    "product_name_fr",
+                    "buffer_radius",
+                    "size",
+                    "product_group_id",
+                    "is_digital",
+                    "active",
+                    "created_by",
+                    "created_at",
+                    "__typename"
+                ],
+                "type": "object"
+            },
+            "ProductResponse": {
+                "properties": {
+                    "circulation": {
+                        "type": "number"
+                    },
+                    "face_count": {
+                        "type": "number"
+                    },
+                    "flightingObjectives": {
+                        "items": {
+                            "$ref": "#/components/schemas/FlightingObjectivesResponse"
+                        },
+                        "type": "array"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "objectives": {
+                        "$ref": "#/components/schemas/ObjectivesResponse"
+                    },
+                    "product": {
+                        "type": "string"
+                    },
+                    "weeks": {
+                        "items": {
+                            "type": "number"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "product",
+                    "id",
+                    "face_count",
+                    "circulation"
+                ],
+                "type": "object"
+            },
+            "ProductsFilterQueryResponse": {
+                "properties": {
+                    "category": {
+                        "enum": [
+                            "DIGITAL",
+                            "STATIC"
+                        ],
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "product": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "category",
+                    "product",
+                    "id"
+                ],
+                "type": "object"
+            },
+            "RoleDTO": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled",
+                            "Deleted"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "RuleModelDehydratedDto": {
+                "properties": {
+                    "condition": {
+                        "enum": [
+                            "and",
+                            "or"
+                        ],
+                        "type": "string"
+                    },
+                    "field": {
+                        "description": "Field id",
+                        "type": "string"
+                    },
+                    "label": {
+                        "description": "Label",
+                        "type": "string"
+                    },
+                    "not": {
+                        "type": "boolean"
+                    },
+                    "operator": {
+                        "type": "string"
+                    },
+                    "rules": {
+                        "items": {
+                            "$ref": "#/components/schemas/RuleModelDehydratedDto"
+                        },
+                        "type": "array"
+                    },
+                    "type": {
+                        "description": "Type",
+                        "type": "string"
+                    },
+                    "value": {
+                        "items": {
+                            "type": "string"
+                        },
+                        "type": "array"
+                    }
+                },
+                "required": [
+                    "condition",
+                    "rules",
+                    "field",
+                    "label",
+                    "type",
+                    "operator",
+                    "value",
+                    "not"
+                ],
+                "type": "object"
+            },
+            "SegmentCompositeKeyDto": {
+                "properties": {
+                    "commb_face_id": {
+                        "type": "number"
+                    },
+                    "from_segment_id": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "is_digital_measurement": {
+                        "type": "boolean"
+                    },
+                    "to_segment_id": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "commb_face_id",
+                    "from_segment_id"
+                ],
+                "type": "object"
+            },
+            "SegmentDto": {
+                "properties": {
+                    "active": {
+                        "type": "boolean"
+                    },
+                    "commb_face_id": {
+                        "type": "number"
+                    },
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "distance": {
+                        "type": "number"
+                    },
+                    "from_segment_id": {
+                        "maxLength": 20,
+                        "type": "string"
+                    },
+                    "from_to_segments": {
+                        "type": "string"
+                    },
+                    "is_digital_measurement": {
+                        "type": "boolean"
+                    },
+                    "pct_traffic": {
+                        "type": "number"
+                    },
+                    "polyline": {
+                        "items": {
+                            "$ref": "#/components/schemas/Point"
+                        },
+                        "type": "array"
+                    },
+                    "to_segment_id": {
+                        "type": "string"
+                    },
+                    "traffic_type": {
+                        "enum": [
+                            "P",
+                            "V",
+                            "B"
+                        ],
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "created_by",
+                    "created_at",
+                    "commb_face_id",
+                    "from_segment_id",
+                    "traffic_type",
+                    "pct_traffic",
+                    "active"
+                ],
+                "type": "object"
+            },
+            "StaticCirculationData": {
+                "properties": {
+                    "circulation": {
+                        "$ref": "#/components/schemas/CirculationData"
+                    }
+                },
+                "required": [
+                    "circulation"
+                ],
+                "type": "object"
+            },
+            "TaskDto": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "created_by": {
+                        "type": "number"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "organization": {
+                        "$ref": "#/components/schemas/TaskOrganization"
+                    },
+                    "organizationId": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "enum": [
+                            "created",
+                            "in-progress",
+                            "approved",
+                            "rejected",
+                            "cancelled",
+                            "closed",
+                            "ready-for-review"
+                        ],
+                        "type": "string"
+                    },
+                    "task_data": {
+                        "type": "object"
+                    },
+                    "task_type": {
+                        "enum": [
+                            "create_face",
+                            "create_location",
+                            "generic_request",
+                            "update_face",
+                            "update_location"
+                        ],
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "updated_by": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "created_by",
+                    "created_at",
+                    "id",
+                    "task_data",
+                    "task_type",
+                    "status",
+                    "organizationId",
+                    "organization"
+                ],
+                "type": "object"
+            },
+            "TaskOrganization": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "type": "object"
+            },
+            "UpdateLocationDto": {
+                "properties": {
+                    "commb_location_id": {
+                        "type": "number"
+                    },
+                    "location": {
+                        "$ref": "#/components/schemas/EditableLocationDto"
+                    }
+                },
+                "required": [
+                    "location",
+                    "commb_location_id"
+                ],
+                "type": "object"
+            },
+            "UpdateMarketDto": {
+                "properties": {
+                    "market_name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "market_name",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "UpdateProfileDto": {
+                "properties": {
+                    "first_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "last_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "first_name",
+                    "last_name"
+                ],
+                "type": "object"
+            },
+            "UpdateRoleDTO": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled",
+                            "Deleted"
+                        ],
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "name",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "UpdateTaskDto": {
+                "properties": {
+                    "status": {
+                        "enum": [
+                            "created",
+                            "in-progress",
+                            "approved",
+                            "rejected",
+                            "cancelled",
+                            "closed",
+                            "ready-for-review"
+                        ],
+                        "type": "string"
+                    },
+                    "task_data": {
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "UpdateUserDto": {
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/EditableUserDto"
+                    }
+                },
+                "required": [
+                    "id",
+                    "user"
+                ],
+                "type": "object"
+            },
+            "UpdateUserMarketAccessDto": {
+                "properties": {
+                    "market_id": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "user_id",
+                    "market_id",
+                    "status"
+                ],
+                "type": "object"
+            },
+            "UpdateViewManagerDto": {
+                "properties": {},
+                "type": "object"
+            },
+            "UserDto": {
+                "properties": {
+                    "auth0_id": {
+                        "type": "string"
+                    },
+                    "auth0_status": {
+                        "enum": [
+                            "Sync",
+                            "Error"
+                        ],
+                        "type": "string"
+                    },
+                    "email_address": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "first_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "hubspot_id": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "last_name": {
+                        "maxLength": 50,
+                        "type": "string"
+                    },
+                    "organization": {
+                        "description": "Foreign key, associates to id from organizations",
+                        "type": "number"
+                    },
+                    "role_name": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "maxLength": 10,
+                        "type": "string"
+                    },
+                    "user_role": {
+                        "description": "Foreign key, associates to id from roles",
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "first_name",
+                    "last_name",
+                    "email_address",
+                    "user_role",
+                    "organization",
+                    "status",
+                    "id",
+                    "hubspot_id"
+                ],
+                "type": "object"
+            },
+            "UserMarketAccessDTO": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "market_id": {
+                        "type": "number"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "id",
+                    "market_id",
+                    "user_id",
+                    "status",
+                    "created_at"
+                ],
+                "type": "object"
+            },
+            "ViewManagerDto": {
+                "properties": {
+                    "created_at": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "number"
+                    },
+                    "poi_data": {
+                        "type": "object"
+                    },
+                    "status": {
+                        "enum": [
+                            "Active",
+                            "Disabled"
+                        ],
+                        "type": "string"
+                    },
+                    "updated_at": {
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "type": "number"
+                    },
+                    "view_data": {
+                        "type": "object"
+                    },
+                    "view_name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "view_name",
+                    "view_data",
+                    "user_id",
+                    "status",
+                    "created_at",
+                    "poi_data"
+                ],
+                "type": "object"
+            },
+            "WeeklyImpression": {
+                "properties": {
+                    "all": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    },
+                    "fr": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    },
+                    "mo": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    },
+                    "sa": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    },
+                    "su": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    },
+                    "th": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    },
+                    "tu": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    },
+                    "wd": {
+                        "$ref": "#/components/schemas/DailyImpression"
+                    }
+                },
+                "required": [
+                    "fr",
+                    "mo",
+                    "sa",
+                    "su",
+                    "th",
+                    "tu",
+                    "wd",
+                    "all"
+                ],
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "auth0_jwk": {
+                "flows": {
+                    "implicit": {
+                        "authorizationUrl": "",
+                        "scopes": {
+                            "all": "all"
+                        }
+                    }
+                },
+                "type": "oauth2",
+                "x-google-audiences": "AUTH0_AUDIENCE",
+                "x-google-issuer": "https://AUTH0_ACCOUNT_NAME.auth0.com/",
+                "x-google-jwks_uri": "https://AUTH0_ACCOUNT_NAME.auth0.com/.well-known/jwks.json"
+            },
+            "bearer": {
+                "bearerFormat": "JWT",
+                "scheme": "bearer",
+                "type": "http"
+            }
+        }
+    },
+    "info": {
+        "contact": {},
+        "description": "APIs used to access various functionalities of Roadmap platform.",
+        "title": "Roadmap APIs",
+        "version": "1.1"
+    },
+    "openapi": "3.0.0",
+    "paths": {
+        "/ooh-product": {
+            "get": {
+                "operationId": "OOHProductController_getOOHProducts",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/OOHProductDTO"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "OOHProduct"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "post": {
+                "operationId": "OOHProductController_createOOHProduct",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOOHProductDTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "The product was created Successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "500": {
+                        "description": "Internal Server Exception"
+                    }
+                },
+                "tags": [
+                    "OOHProduct"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/ooh-product/{id}": {
+            "delete": {
+                "operationId": "OOHProductController_deleteOOHProduct",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The product was deleted Successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "500": {
+                        "description": "Internal Server Exception"
+                    }
+                },
+                "tags": [
+                    "OOHProduct"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "patch": {
+                "operationId": "OOHProductController_updateOOHProduct",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchOOHProductDTO"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "The product was updated Successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "500": {
+                        "description": "Internal Server Exception"
+                    }
+                },
+                "tags": [
+                    "OOHProduct"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/partner/facedata/byId": {
+            "get": {
+                "operationId": "CirculationController_getCirculations",
+                "parameters": [
+                    {
+                        "example": 2938,
+                        "in": "query",
+                        "name": "commb_face_id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/CalculationData"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "The circulation data has been retrieved successfully."
+                    }
+                },
+                "tags": [
+                    "Partner"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/partner/faces/byDate": {
+            "get": {
+                "operationId": "PartnerFacesController_getPartnerInventoryByDate",
+                "parameters": [
+                    {
+                        "example": "2021-12-24T13:45:00Z",
+                        "in": "query",
+                        "name": "updated_after",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/PartnerFaceData"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "The face list has been retrieved successfully."
+                    }
+                },
+                "tags": [
+                    "Partner"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/partner/faces/byId": {
+            "get": {
+                "operationId": "PartnerFacesController_getPartnerInventoryByIds",
+                "parameters": [
+                    {
+                        "example": 2938,
+                        "explode": false,
+                        "in": "query",
+                        "name": "commb_face_id",
+                        "required": true,
+                        "schema": {
+                            "items": {
+                                "type": "number"
+                            },
+                            "type": "array"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/PartnerFaceData"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "The face list has been retrieved successfully."
+                    }
+                },
+                "tags": [
+                    "Partner"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/partner/faces/idsByDate": {
+            "get": {
+                "operationId": "PartnerFacesController_getPartnerInventoryIdsByDate",
+                "parameters": [
+                    {
+                        "example": "2021-12-24T13:45:00Z",
+                        "in": "query",
+                        "name": "updated_after",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/PartnerFaceId"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": "The face list has been retrieved successfully."
+                    }
+                },
+                "tags": [
+                    "Partner"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/product": {
+            "get": {
+                "operationId": "ProductController_getProducts",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProductDTO"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "Product"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/profile": {
+            "get": {
+                "operationId": "ProfileController_getProfile",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The profile has been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "Profile"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "put": {
+                "operationId": "ProfileController_UpdateProfile",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateProfileDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UpdateProfileDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "201": {
+                        "description": "The Profile has been successfully Updated."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "Profile"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/rf-tool/audience/{id}": {
+            "delete": {
+                "operationId": "RFToolController_delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AudiencesDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Audience Not Found."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "get": {
+                "operationId": "RFToolController_getAudienceById",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AudiencesDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "patch": {
+                "operationId": "RFToolController_patchAudience",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchAudienceDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "403": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/rf-tool/audiences": {
+            "post": {
+                "operationId": "RFToolController_postAudience",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateAudienceDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CampaignPlanDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/rf-tool/audiences/list": {
+            "get": {
+                "operationId": "RFToolController_getAudience",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/rf-tool/mop/filters": {
+            "get": {
+                "operationId": "RFToolController_getFilters",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "markets",
+                        "required": false,
+                        "schema": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "organizations",
+                        "required": false,
+                        "schema": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "products",
+                        "required": false,
+                        "schema": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/FilterQueryReponseDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/rf-tool/results/mop-for-campaign/{id}": {
+            "get": {
+                "operationId": "RFToolController_getMOPQueryResults",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/MopQueryResultsDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/rf-tool/{campaignId}/audience/{audienceId}": {
+            "post": {
+                "operationId": "RFToolController_addAudienceToCampaign",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "campaignId",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "audienceId",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "201": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "403": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/rf-tool/{id}": {
+            "delete": {
+                "operationId": "RFToolController_deleteCampaignPlan",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CampaignPlanDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "Campaign Plan Not Found."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "get": {
+                "operationId": "RFToolController_getPlanById",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CampaignPlanDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "patch": {
+                "operationId": "RFToolController_patchCampaignPlan",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PatchCampaignPlanDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    },
+                    "403": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "RFTool"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/task-histories/{task_id}": {
+            "get": {
+                "operationId": "TaskHistoryController_findOne",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "task_id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "previous",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "TaskHistories"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/tasks": {
+            "get": {
+                "operationId": "TaskController_findAll",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "statuses",
+                        "required": false,
+                        "schema": {
+                            "items": {
+                                "type": "string"
+                            },
+                            "type": "array"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/TaskDto"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Tasks"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "post": {
+                "operationId": "TaskController_create",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateTaskInput"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Tasks"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/tasks/{id}": {
+            "get": {
+                "operationId": "TaskController_findOne",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TaskDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Tasks"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "patch": {
+                "operationId": "TaskController_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateTaskDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "Tasks"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/usermarketaccesses": {
+            "post": {
+                "operationId": "UserMarketAccessController_create",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUserMarketAccessDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserMarketAccessDTO"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "UserMarketAccesses"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/usermarketaccesses/{id}": {
+            "delete": {
+                "operationId": "UserMarketAccessController_delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserMarketAccessDTO"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "400": {
+                        "description": "User Market Access Not Found."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "UserMarketAccesses"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "put": {
+                "operationId": "UserMarketAccessController_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserMarketAccessDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserMarketAccessDTO"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "UserMarketAccesses"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "operationId": "UserController_getUsers",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "The users list has been retrieved successfully."
+                    }
+                },
+                "tags": [
+                    "Users"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "post": {
+                "operationId": "UserController_createUser",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUserDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "The user has been successfully created."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "409": {
+                        "description": "User already exist with the provided email address"
+                    },
+                    "500": {
+                        "description": "Error creating user on Auth0"
+                    }
+                },
+                "tags": [
+                    "Users"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "put": {
+                "operationId": "UserController_updateUser",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "201": {
+                        "description": "The user has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    },
+                    "409": {
+                        "description": "User already exist with the provided email address"
+                    }
+                },
+                "tags": [
+                    "Users"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "operationId": "UserController_getUserById",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The user has been retrieved successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "Users"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/users/{id}/{status}": {
+            "patch": {
+                "operationId": "UserController_updateUserStatus",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "path",
+                        "name": "status",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "Active",
+                                "Disabled"
+                            ],
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    },
+                    "201": {
+                        "description": "The user status has been updated successfully."
+                    },
+                    "400": {
+                        "description": "Bad Request."
+                    },
+                    "403": {
+                        "description": "Forbidden."
+                    }
+                },
+                "tags": [
+                    "Users"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/viewmanagers": {
+            "get": {
+                "operationId": "ViewManagerController_findAllByUser",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/GetViewManagerDto"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "ViewManagers"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            },
+            "post": {
+                "operationId": "ViewManagerController_create",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateViewManagerDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ViewManagerDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "ViewManagers"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        },
+        "/viewmanagers/{id}": {
+            "put": {
+                "operationId": "ViewManagerController_update",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "schema": {
+                            "type": "number"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateViewManagerDto"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ViewManagerDto"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "ViewManagers"
+                ],
+                "x-google-backend": {
+                    "address": "https://API_URL",
+                    "deadline": 360,
+                    "path_translation": "APPEND_PATH_TO_ADDRESS"
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "auth0_jwk": []
+        },
+        {
+            "bearer": []
+        }
+    ],
+    "servers": [],
+    "tags": []
+}
