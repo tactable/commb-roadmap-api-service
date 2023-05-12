@@ -3278,20 +3278,6 @@
             }
         },
         "securitySchemes": {
-            "auth0_jwk": {
-                "flows": {
-                    "implicit": {
-                        "authorizationUrl": "",
-                        "scopes": {
-                            "all": "all"
-                        }
-                    }
-                },
-                "type": "oauth2",
-                "x-google-audiences": "AUTH0_AUDIENCE",
-                "x-google-issuer": "https://AUTH0_ACCOUNT_NAME.auth0.com/",
-                "x-google-jwks_uri": "https://AUTH0_ACCOUNT_NAME.auth0.com/.well-known/jwks.json"
-            },
             "bearer": {
                 "bearerFormat": "JWT",
                 "scheme": "bearer",
@@ -4808,12 +4794,22 @@
     },
     "security": [
         {
-            "auth0_jwk": []
-        },
-        {
             "bearer": []
         }
     ],
-    "servers": [],
+    "servers": [
+        {
+            "url": "https://dev.roadmap.commb.ca/services",
+            "description": "Development"
+        },
+        {
+            "url": "https://staging.roadmap.commb.ca/services",
+            "description": "Staging"
+        },
+        {
+            "url": "https://prod.roadmap.commb.ca/services",
+            "description": "Production"
+        }
+    ],
     "tags": []
 }
