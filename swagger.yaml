@@ -1,5 +1,10 @@
 components:
   schemas:
+    AggregateObject:
+      properties:
+        count:
+          type: number
+      type: object
     ApplicableSegmentDto:
       properties:
         DIRECTION:
@@ -67,30 +72,45 @@ components:
         - face_ids
         - rules
       type: object
-    AudienceProfileReachFrequencyHTTPBody:
+    AudienceProfileReachFrequencyFaceInput:
+      properties:
+        face_id:
+          type: number
+        reach_objectives:
+          $ref: '#/components/schemas/AudienceProfileReachFrequencyFaceReachObjsInput'
+        reach_target:
+          $ref: >-
+            #/components/schemas/AudienceProfileReachFrequencyFaceReachTargetInput
+      required:
+        - face_id
+        - reach_objectives
+        - reach_target
+      type: object
+    AudienceProfileReachFrequencyFaceReachObjsInput:
+      properties:
+        daily_grps:
+          type: number
+      type: object
+    AudienceProfileReachFrequencyFaceReachTargetInput:
       properties:
         effective_frequency:
-          description: Effective Frequency
           type: number
-        face_ids:
-          description: Face ids as an array of integers
+        weeks:
           items:
             type: number
-          type: array
-        rules:
-          allOf:
-            - $ref: '#/components/schemas/RuleModelDehydratedDto'
-          description: Rules from syncfusion/query builder
-        weeks:
-          description: Weeks
-          items:
-            type: string
           type: array
       required:
         - weeks
         - effective_frequency
-        - face_ids
-        - rules
+      type: object
+    AudienceProfileReachFrequencyHTTPBody:
+      properties:
+        faces:
+          items:
+            $ref: '#/components/schemas/AudienceProfileReachFrequencyFaceInput'
+          type: array
+      required:
+        - faces
       type: object
     AudiencesDto:
       properties:
@@ -130,6 +150,8 @@ components:
           type: string
         digital:
           $ref: '#/components/schemas/DigitalImpressionsData'
+        dir:
+          $ref: '#/components/schemas/CirculationData'
         last_updated_at:
           type: string
         static:
@@ -141,6 +163,7 @@ components:
         - last_updated_at
         - static
         - digital
+        - dir
       type: object
     CampaignPlanDto:
       properties:
@@ -184,10 +207,25 @@ components:
       type: object
     CartoMapData:
       properties:
+        circulationLevels:
+          items:
+            type: number
+          type: array
         geoJsonData:
           $ref: '#/components/schemas/GeoJsonDto'
+        impressionLevels:
+          items:
+            type: number
+          type: array
+        viewport:
+          items:
+            type: number
+          type: array
       required:
         - geoJsonData
+        - viewport
+        - circulationLevels
+        - impressionLevels
       type: object
     CartoPoiData:
       properties:
@@ -203,6 +241,13 @@ components:
       required:
         - in
       type: object
+    CartoSearchInput:
+      properties:
+        attribute:
+          type: string
+        query:
+          type: string
+      type: object
     CirculationData:
       properties:
         pedestrian:
@@ -215,6 +260,13 @@ components:
         - total
         - vehicular
         - pedestrian
+      type: object
+    CmaCaByCmaCaDto:
+      properties:
+        cmaname:
+          type: string
+      required:
+        - cmaname
       type: object
     CmaCaIdDto:
       properties:
@@ -229,6 +281,8 @@ components:
           type: string
         cma_ca_id:
           type: number
+        cma_stats:
+          $ref: '#/components/schemas/CmaStats'
         csd_name:
           type: string
         csduid:
@@ -238,6 +292,17 @@ components:
         - ca_cma_name
         - csduid
         - csd_name
+        - cma_stats
+      type: object
+    CmaStats:
+      properties:
+        centroid:
+          type: object
+        geometry:
+          type: object
+      required:
+        - geometry
+        - centroid
       type: object
     CommentDto:
       properties:
@@ -309,44 +374,64 @@ components:
         external_face_numeric:
           type: string
         facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
           type: string
         illumination_from:
           maximum: 24
           minimum: 0
           type: number
         illumination_status:
+          enum:
+            - Lit
+            - Unlit
+            - Partial
           type: string
         illumination_to:
           maximum: 24
           minimum: 0
           type: number
         is_trio:
+          enum:
+            - 'No'
+            - 'Yes'
           maximum: 1
           minimum: 0
-          type: number
-        media_assets:
           type: string
         num_of_spots:
           type: number
-        organizationId:
-          type: number
         placing:
           type: string
-        product_group_id:
-          type: number
         product_id:
           type: number
         spot_time:
           type: number
         status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under_Review
           type: string
-        updated_by:
-          type: number
       required:
         - external_face_numeric
         - commb_location_id
         - product_id
-        - product_group_id
         - facing_direction
         - illumination_status
         - illumination_from
@@ -356,31 +441,9 @@ components:
       type: object
     CreateLocationDto:
       properties:
-        bearing:
-          enum:
-            - AT
-            - S/O
-            - W/O
-            - E/O
-            - N/O
-            - OPP
-            - AND
-          type: string
-        ca_cma_name:
-          type: string
-        cma_ca_type:
-          maxLength: 3
-          type: string
-        cross_artery:
-          maxLength: 150
-          type: string
-        csd_name:
-          type: string
         description:
           maxLength: 255
           type: string
-        distance:
-          type: number
         external_location_numeric:
           maxLength: 20
           type: string
@@ -395,23 +458,8 @@ components:
           type: string
         longitude:
           type: number
-        primary_artery:
-          maxLength: 150
-          type: string
-        primary_side:
-          enum:
-            - NS
-            - WS
-            - ES
-            - SS
-            - NWC
-            - NEC
-            - SWC
-            - SEC
-          type: string
-        province:
-          maxLength: 2
-          type: string
+        operator_id:
+          type: number
         status:
           enum:
             - Active
@@ -422,9 +470,6 @@ components:
         - latitude
         - longitude
         - location_name
-        - ca_cma_name
-        - cma_ca_type
-        - csd_name
       type: object
     CreateMarketDto:
       properties:
@@ -496,6 +541,22 @@ components:
         - is_digital
         - created_by
       type: object
+    CreateProductGroupDTO:
+      properties:
+        created_by:
+          type: number
+        media_type_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+      required:
+        - created_by
+        - media_type_id
+        - product_group_name
+        - product_group_name_fr
+      type: object
     CreateRoleDTO:
       properties:
         name:
@@ -511,6 +572,8 @@ components:
       type: object
     CreateSegmentDto:
       properties:
+        active:
+          type: boolean
         commb_face_id:
           type: number
         distance:
@@ -520,6 +583,8 @@ components:
           type: string
         from_to_segments:
           type: string
+        is_digital_measurement:
+          type: boolean
         pct_traffic:
           type: number
         polyline:
@@ -551,6 +616,7 @@ components:
             - generic_request
             - update_face
             - update_location
+            - circulation_review
           type: string
       required:
         - task_type
@@ -602,6 +668,13 @@ components:
     CreateViewManagerDto:
       properties: {}
       type: object
+    CsdByCsdDto:
+      properties:
+        csd_name:
+          type: string
+      required:
+        - csd_name
+      type: object
     CsdUidDto:
       properties:
         csd_name:
@@ -612,6 +685,18 @@ components:
     DailyImpression:
       properties:
         all:
+          type: number
+        day:
+          type: string
+        dp_01:
+          type: number
+        dp_02:
+          type: number
+        dp_03:
+          type: number
+        dp_04:
+          type: number
+        dp_05:
           type: number
         hr_01:
           type: number
@@ -661,6 +746,7 @@ components:
           type: number
       required:
         - all
+        - day
         - hr_01
         - hr_02
         - hr_03
@@ -684,6 +770,11 @@ components:
         - hr_21
         - hr_22
         - hr_23
+        - dp_01
+        - dp_02
+        - dp_03
+        - dp_04
+        - dp_05
       type: object
     DigitalImpressionsData:
       properties:
@@ -694,94 +785,6 @@ components:
       required:
         - screen_impressions
         - spot_ad_play_impressions
-      type: object
-    EditableLocationDto:
-      properties:
-        bearing:
-          enum:
-            - AT
-            - S/O
-            - W/O
-            - E/O
-            - N/O
-            - OPP
-            - AND
-          type: string
-        ca_cma_name:
-          type: string
-        cma_ca:
-          type: number
-        cma_ca_id:
-          $ref: '#/components/schemas/CmaCaIdDto'
-        cma_ca_type:
-          maxLength: 3
-          type: string
-        commb_location_id:
-          type: number
-        created_at:
-          type: string
-        created_by:
-          type: number
-        cross_artery:
-          maxLength: 150
-          type: string
-        csd:
-          type: number
-        csd_name:
-          type: string
-        csduid:
-          $ref: '#/components/schemas/CsdUidDto'
-        description:
-          maxLength: 255
-          type: string
-        distance:
-          type: number
-        external_location_numeric:
-          maxLength: 20
-          type: string
-        geographic_code:
-          type: number
-        latitude:
-          type: number
-        location_name:
-          maxLength: 1000
-          type: string
-        longitude:
-          type: number
-        operator_id:
-          description: Foreign key, associates to id from organizations
-          type: number
-        primary_artery:
-          maxLength: 150
-          type: string
-        primary_side:
-          enum:
-            - NS
-            - WS
-            - ES
-            - SS
-            - NWC
-            - NEC
-            - SWC
-            - SEC
-          type: string
-        province:
-          maxLength: 2
-          type: string
-        region:
-          type: number
-        status:
-          enum:
-            - Active
-            - Disabled
-          type: string
-        timezone_id:
-          maxLength: 20
-          type: string
-        updated_at:
-          type: string
-        updated_by:
-          type: number
       type: object
     EditableUserDto:
       properties:
@@ -813,6 +816,18 @@ components:
       required:
         - url
       type: object
+    FaceCalculationRequestBody:
+      properties:
+        face_ids:
+          items:
+            type: number
+          type: array
+        update_inventory_version:
+          default: false
+          type: boolean
+      required:
+        - face_ids
+      type: object
     FaceCalculations:
       properties:
         calculation_data:
@@ -825,6 +840,13 @@ components:
         - commb_face_id
         - calculation_version
         - calculation_data
+      type: object
+    FaceExportRequestBody:
+      properties:
+        filter:
+          items:
+            type: object
+          type: array
       type: object
     Feature:
       properties:
@@ -843,15 +865,33 @@ components:
       type: object
     FetchCartoDataInput:
       properties:
+        circulation:
+          type: boolean
         geometry:
           type: object
+        impressions:
+          type: boolean
+        inventory_commb_face_id:
+          $ref: '#/components/schemas/CartoQuery'
+        inventory_external_face_numeric:
+          $ref: '#/components/schemas/CartoQuery'
         inventory_facing_direction:
           $ref: '#/components/schemas/CartoQuery'
         inventory_illumination_status:
           $ref: '#/components/schemas/CartoQuery'
         location_cma_ca_name:
           $ref: '#/components/schemas/CartoQuery'
+        location_commb_location_id:
+          $ref: '#/components/schemas/CartoQuery'
         location_csd_name:
+          $ref: '#/components/schemas/CartoQuery'
+        location_external_location_numeric:
+          $ref: '#/components/schemas/CartoQuery'
+        location_latitude:
+          $ref: '#/components/schemas/CartoQuery'
+        location_location_name:
+          $ref: '#/components/schemas/CartoQuery'
+        location_longitude:
           $ref: '#/components/schemas/CartoQuery'
         location_province:
           $ref: '#/components/schemas/CartoQuery'
@@ -865,6 +905,8 @@ components:
           $ref: '#/components/schemas/CartoQuery'
         products_product_name:
           $ref: '#/components/schemas/CartoQuery'
+        search:
+          $ref: '#/components/schemas/CartoSearchInput'
         viewport:
           items:
             type: number
@@ -934,6 +976,15 @@ components:
         - coordinates
         - type
       type: object
+    GetStreetViewUrlRequestBody:
+      properties:
+        face_ids:
+          items:
+            type: number
+          type: array
+      required:
+        - face_ids
+      type: object
     GetViewManagerDto:
       properties:
         created_at:
@@ -987,8 +1038,24 @@ components:
         - values
         - owner
       type: object
+    InventoriesAggregateObject:
+      properties:
+        aggregate:
+          $ref: '#/components/schemas/AggregateObject'
+      type: object
+    InventoryCalculationsSummary:
+      properties:
+        calculations_total:
+          type: number
+        total_ped:
+          type: number
+        total_veh:
+          type: number
+      type: object
     InventoryDto:
       properties:
+        calculation_version:
+          type: string
         commb_face_id:
           type: number
         commb_location_id:
@@ -996,21 +1063,47 @@ components:
         external_face_numeric:
           type: string
         facing_direction:
+          enum: &ref_23
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
           type: string
         illumination_from:
           maximum: 24
           minimum: 0
           type: number
         illumination_status:
+          enum: &ref_24
+            - Lit
+            - Unlit
+            - Partial
           type: string
         illumination_to:
           maximum: 24
           minimum: 0
           type: number
         is_trio:
+          enum: &ref_25
+            - 'No'
+            - 'Yes'
           maximum: 1
           minimum: 0
-          type: number
+          type: string
+        media_asset_url:
+          type: string
         media_assets:
           type: string
         num_of_spots:
@@ -1023,13 +1116,16 @@ components:
           type: string
         placing:
           type: string
-        product_group_id:
-          type: number
         product_id:
           type: number
         spot_time:
           type: number
         status:
+          enum: &ref_26
+            - Active
+            - Estimate
+            - Disabled
+            - Under_Review
           type: string
         updated_by:
           type: number
@@ -1038,7 +1134,6 @@ components:
         - external_face_numeric
         - commb_location_id
         - product_id
-        - product_group_id
         - facing_direction
         - illumination_status
         - illumination_from
@@ -1046,6 +1141,133 @@ components:
         - is_trio
         - status
         - organizationName
+      type: object
+    InventoryEntity:
+      properties:
+        calculation_version:
+          type: string
+        calculations:
+          $ref: '#/components/schemas/InventoryCalculationsSummary'
+        commb_face_id:
+          type: number
+        commb_location_id:
+          type: number
+        external_face_numeric:
+          type: string
+        face_calculations:
+          $ref: '#/components/schemas/FaceCalculations'
+        facing_direction:
+          enum: *ref_23
+          type: string
+        illumination_from:
+          maximum: 24
+          minimum: 0
+          type: number
+        illumination_status:
+          enum: *ref_24
+          type: string
+        illumination_to:
+          maximum: 24
+          minimum: 0
+          type: number
+        is_trio:
+          enum: *ref_25
+          maximum: 1
+          minimum: 0
+          type: string
+        location:
+          $ref: '#/components/schemas/InventoryLocation'
+        media_asset_url:
+          type: string
+        media_assets:
+          type: string
+        num_of_spots:
+          type: number
+        organizationId:
+          type: number
+        organizationName:
+          type: string
+        physical_status:
+          type: string
+        placing:
+          type: string
+        product:
+          $ref: '#/components/schemas/InventoryProduct'
+        product_group:
+          $ref: '#/components/schemas/InventoryProductGroup'
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        status:
+          enum: *ref_26
+          type: string
+        updated_by:
+          type: number
+      required:
+        - commb_face_id
+        - external_face_numeric
+        - commb_location_id
+        - product_id
+        - facing_direction
+        - illumination_status
+        - illumination_from
+        - illumination_to
+        - is_trio
+        - status
+        - organizationName
+        - location
+        - product
+        - product_group
+      type: object
+    InventoryLocation:
+      properties:
+        external_location_numeric:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+        organization:
+          $ref: '#/components/schemas/InventoryOrganization'
+      required:
+        - latitude
+        - longitude
+        - external_location_numeric
+        - organization
+      type: object
+    InventoryOrganization:
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+      required:
+        - id
+        - name
+      type: object
+    InventoryProduct:
+      properties:
+        buffer_radius:
+          type: number
+        is_digital:
+          type: boolean
+        product_name:
+          type: string
+        size:
+          type: string
+      required:
+        - buffer_radius
+        - size
+        - is_digital
+        - product_name
+      type: object
+    InventoryProductGroup:
+      properties:
+        media_type:
+          $ref: '#/components/schemas/MediaType'
+      required:
+        - media_type
       type: object
     LocationData:
       properties:
@@ -1088,6 +1310,8 @@ components:
           type: string
         ca_cma_name:
           type: string
+        cmaCaByCmaCa:
+          $ref: '#/components/schemas/CmaCaByCmaCaDto'
         cma_ca:
           type: number
         cma_ca_id:
@@ -1101,11 +1325,15 @@ components:
           type: string
         created_by:
           type: number
+        created_by_user:
+          $ref: '#/components/schemas/UserDto'
         cross_artery:
           maxLength: 150
           type: string
         csd:
           type: number
+        csdByCsd:
+          $ref: '#/components/schemas/CsdByCsdDto'
         csd_name:
           type: string
         csduid:
@@ -1120,6 +1348,8 @@ components:
           type: string
         geographic_code:
           type: number
+        inventories_aggregate:
+          $ref: '#/components/schemas/InventoriesAggregateObject'
         latitude:
           type: number
         location_name:
@@ -1161,6 +1391,8 @@ components:
           type: string
         updated_by:
           type: number
+        updated_by_user:
+          $ref: '#/components/schemas/UserDto'
       required:
         - commb_location_id
         - external_location_numeric
@@ -1171,16 +1403,19 @@ components:
         - region
         - cma_ca
         - cma_ca_type
+        - cmaCaByCmaCa
+        - csdByCsd
         - geographic_code
         - csd
         - status
-        - created_by
         - csd_name
         - ca_cma_name
         - updated_at
         - created_at
         - cma_ca_id
         - csduid
+        - created_by_user
+        - updated_by_user
       type: object
     LocationInventoryPoiFilters:
       properties:
@@ -1269,6 +1504,13 @@ components:
         - market
         - province
         - id
+      type: object
+    MediaType:
+      properties:
+        media_type_name:
+          type: string
+      required:
+        - media_type_name
       type: object
     Mop:
       properties:
@@ -1637,39 +1879,60 @@ components:
         external_face_numeric:
           type: string
         facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
           type: string
         illumination_from:
           maximum: 24
           minimum: 0
           type: number
         illumination_status:
+          enum:
+            - Lit
+            - Unlit
+            - Partial
           type: string
         illumination_to:
           maximum: 24
           minimum: 0
           type: number
         is_trio:
+          enum:
+            - 'No'
+            - 'Yes'
           maximum: 1
           minimum: 0
-          type: number
-        media_assets:
           type: string
         num_of_spots:
           type: number
-        organizationId:
-          type: number
         placing:
           type: string
-        product_group_id:
-          type: number
         product_id:
           type: number
         spot_time:
           type: number
         status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under_Review
           type: string
-        updated_by:
-          type: number
       type: object
     PatchOOHProductDTO:
       properties:
@@ -1737,12 +2000,29 @@ components:
         updated_by:
           type: number
       type: object
+    PatchProductGroupDTO:
+      properties:
+        media_type_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+      type: object
     PatchSegmentDto:
       properties:
+        active:
+          type: boolean
         distance:
           type: number
         from_to_segments:
           type: string
+        is_digital_measurement:
+          type: boolean
         pct_traffic:
           type: number
         polyline:
@@ -1861,6 +2141,40 @@ components:
         - created_at
         - __typename
       type: object
+    ProductGroupDTO:
+      properties:
+        __typename:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+        created_by:
+          type: number
+        media_type_id:
+          type: number
+        product_group_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+      required:
+        - created_at
+        - created_by
+        - media_type_id
+        - product_group_id
+        - product_group_name
+        - product_group_name_fr
+        - updated_at
+        - updated_by
+        - active
+        - __typename
+      type: object
     ProductResponse:
       properties:
         circulation:
@@ -1902,6 +2216,12 @@ components:
         - category
         - product
         - id
+      type: object
+    RemoveMediaDto:
+      properties:
+        locationFaceIndex:
+          description: Face index for location requests
+          type: number
       type: object
     RoleDTO:
       properties:
@@ -2017,7 +2337,30 @@ components:
         - from_segment_id
         - traffic_type
         - pct_traffic
-        - active
+      type: object
+    SpotImpressionCalculationParams:
+      properties:
+        spot_count:
+          type: number
+        spot_length:
+          type: number
+      required:
+        - spot_length
+        - spot_count
+      type: object
+    SpotImpressionRequestBody:
+      properties:
+        calculation_params:
+          items:
+            $ref: '#/components/schemas/SpotImpressionCalculationParams'
+          type: array
+        face_ids:
+          items:
+            type: number
+          type: array
+      required:
+        - calculation_params
+        - face_ids
       type: object
     StaticCirculationData:
       properties:
@@ -2057,6 +2400,7 @@ components:
             - generic_request
             - update_face
             - update_location
+            - circulation_review
           type: string
         updated_at:
           type: string
@@ -2084,13 +2428,31 @@ components:
       type: object
     UpdateLocationDto:
       properties:
-        commb_location_id:
+        description:
+          maxLength: 255
+          type: string
+        external_location_numeric:
+          maxLength: 20
+          type: string
+        latitude:
           type: number
-        location:
-          $ref: '#/components/schemas/EditableLocationDto'
+        location_name:
+          maxLength: 1000
+          type: string
+        longitude:
+          type: number
+        operator_id:
+          type: number
+        status:
+          enum:
+            - Active
+            - Disabled
+          type: string
       required:
-        - location
-        - commb_location_id
+        - external_location_numeric
+        - latitude
+        - longitude
+        - location_name
       type: object
     UpdateMarketDto:
       properties:
@@ -2174,6 +2536,17 @@ components:
       type: object
     UpdateViewManagerDto:
       properties: {}
+      type: object
+    UploadMediaDto:
+      properties:
+        file:
+          format: binary
+          type: string
+        locationFaceIndex:
+          description: Face index for location requests
+          type: number
+      required:
+        - file
       type: object
     UserDto:
       properties:
@@ -2304,6 +2677,16 @@ components:
         - all
       type: object
   securitySchemes:
+    auth0_jwk:
+      flows:
+        implicit:
+          authorizationUrl: ''
+          scopes:
+            all: all
+      type: oauth2
+      x-google-audiences: AUTH0_AUDIENCE
+      x-google-issuer: https://AUTH0_ACCOUNT_NAME.auth0.com/
+      x-google-jwks_uri: https://AUTH0_ACCOUNT_NAME.auth0.com/.well-known/jwks.json
     bearer:
       bearerFormat: JWT
       scheme: bearer
@@ -2315,6 +2698,1093 @@ info:
   version: '1.1'
 openapi: 3.0.0
 paths:
+  /Market:
+    post:
+      operationId: MarketController_createMarket
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMarketDto'
+        required: true
+      responses:
+        '201':
+          description: Market created successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '409':
+          description: Duplicate data
+      tags: &ref_16
+        - Market
+      x-google-backend: &ref_1
+        address: https://API_URL
+        deadline: 360
+        path_translation: APPEND_PATH_TO_ADDRESS
+  /Market/{id}:
+    delete:
+      operationId: MarketController_delete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketDTO'
+          description: ''
+        '400':
+          description: Market Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_16
+      x-google-backend: *ref_1
+    put:
+      operationId: MarketController_update
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMarketDto'
+        required: true
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketDTO'
+          description: ''
+      tags: *ref_16
+      x-google-backend: *ref_1
+  /Market/{market_id}:
+    get:
+      operationId: MarketController_getMarketById
+      parameters:
+        - in: path
+          name: market_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The market has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_16
+      x-google-backend: *ref_1
+  /carto:
+    post:
+      operationId: CartoController_queryCartoData
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartoMapData'
+          description: ''
+      tags: &ref_22
+        - Carto
+      x-google-backend: *ref_1
+  /carto/credentials:
+    get:
+      operationId: CartoController_getToken
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_22
+      x-google-backend: *ref_1
+  /carto/inventory_calculations:
+    post:
+      operationId: CartoController_queryInventoryCalculations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_22
+      x-google-backend: *ref_1
+  /carto/marketshares:
+    post:
+      operationId: CartoController_queryMarketShares
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_22
+      x-google-backend: *ref_1
+  /carto/poi:
+    post:
+      operationId: CartoController_queryPoiData
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoiInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartoPoiData'
+          description: ''
+      tags: *ref_22
+      x-google-backend: *ref_1
+  /carto/reach:
+    post:
+      operationId: CartoController_queryCartoReach
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_22
+      x-google-backend: *ref_1
+  /carto/stats:
+    post:
+      operationId: CartoController_queryCartoStats
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_22
+      x-google-backend: *ref_1
+  /cmaCsd:
+    get:
+      operationId: CmaCsdController_getCmaCsd
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CmaCsdDTO'
+                type: array
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_6
+        - cmaCsd
+      x-google-backend: *ref_1
+  /cmaCsd/{id}:
+    get:
+      operationId: CmaCsdController_getCmaById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+      tags: *ref_6
+      x-google-backend: *ref_1
+  /commb-snf/face/export:
+    post:
+      operationId: CommbSnfController_getPartnerFaceExport
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaceExportRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: &ref_3
+        - CommbSnf
+      x-google-backend: *ref_1
+  /commb-snf/run-calculations:
+    post:
+      operationId: CommbSnfController_runFaceCalculations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaceCalculationRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_3
+      x-google-backend: *ref_1
+  /commb-snf/spot-impressions:
+    post:
+      operationId: CommbSnfController_getPartnerSpotImpressions
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpotImpressionRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_3
+      x-google-backend: *ref_1
+  /commb-snf/street-view-url:
+    post:
+      operationId: CommbSnfController_getStreetViewUrls
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetStreetViewUrlRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_3
+      x-google-backend: *ref_1
+  /comment:
+    post:
+      operationId: CommentController_createComment
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+        required: true
+      responses:
+        '201':
+          description: Comment created successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_18
+        - Comments
+      x-google-backend: *ref_1
+  /comment/{comment_id}:
+    delete:
+      operationId: CommentController_deactivateComment
+      parameters:
+        - in: path
+          name: comment_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDto'
+          description: ''
+        '201':
+          description: Comment deleted successfully.
+        '400':
+          description: Role Id Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_18
+      x-google-backend: *ref_1
+  /comment/{task_id}:
+    get:
+      operationId: CommentController_getComments
+      parameters:
+        - in: path
+          name: task_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Comments has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_18
+      x-google-backend: *ref_1
+  /distinct-filters:
+    get:
+      operationId: DistinctFiltersController_getFilters
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_17
+        - Filters
+      x-google-backend: *ref_1
+  /distinct-filters/poi:
+    get:
+      operationId: DistinctFiltersController_getPoiFilters
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_17
+      x-google-backend: *ref_1
+  /docma/aprfReport/{id}:
+    get:
+      operationId: DocmaController_aprfReport
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The mops audience profile request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: &ref_0
+        - Docma
+      x-google-backend: *ref_1
+  /docma/audienceProfile:
+    post:
+      operationId: DocmaController_audienceProfile
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudienceProfileHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/audienceProfileReachFrequency:
+    post:
+      operationId: DocmaController_audienceProfileReachFrequency
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudienceProfileReachFrequencyHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/inMarketSharesFaces:
+    get:
+      operationId: DocmaController_inMarketSharesFaces
+      parameters:
+        - in: query
+          name: market
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: company
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: faces
+          required: true
+          schema:
+            items:
+              type: number
+            type: array
+      responses:
+        '200':
+          description: The mops in market shares request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/inMarketSharesMop:
+    get:
+      operationId: DocmaController_inMarketSharesMop
+      parameters:
+        - in: query
+          name: market
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: company
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The mops in market shares request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/marketShareFaces:
+    get:
+      operationId: DocmaController_combinedMarketShareByFaces
+      parameters:
+        - in: query
+          name: faces
+          required: true
+          schema:
+            items:
+              type: number
+            type: array
+      responses:
+        '200':
+          description: The mops in market shares request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/mopsAudienceProfile:
+    post:
+      operationId: DocmaController_mopsAudienceProfile
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MopsAudienceProfileHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The mops audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/mopsAudienceProfileReachFrequency:
+    post:
+      operationId: DocmaController_mopsAudienceProfileReachFrequency
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MopsAudienceProfileReachFrequencyHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The mops audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /face:
+    get:
+      operationId: FaceController_getInventory
+      parameters:
+        - in: query
+          name: offset
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '201':
+          description: The inventory has been added Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_8
+        - Inventory
+      x-google-backend: *ref_1
+    post:
+      operationId: FaceController_addInventoryToLocation
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInventoryDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /face/calculations/{commb_face_id}:
+    get:
+      operationId: FaceController_getInventoryCalculations
+      parameters:
+        - in: path
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaceCalculations'
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /face/commb_locations/{commb_location_id}:
+    get:
+      operationId: FaceController_getInventoriesByLocationId
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/InventoryEntity'
+                type: array
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /face/exportface:
+    get:
+      operationId: FaceController_getExportFace
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportInventory'
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /face/media-assets/{id}:
+    patch:
+      operationId: FaceController_updateFaceMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportFileDto'
+        description: Media Asset Upload
+        required: true
+      responses:
+        '200':
+          description: ''
+        '201':
+          description: The face media assets has been successfully updated.
+        '400':
+          description: Bad Request.
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /face/report:
+    get:
+      operationId: FaceController_getInventoriesReport
+      parameters:
+        - in: query
+          name: offset
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /face/report/{id}:
+    get:
+      operationId: FaceController_getInventoryReportByFaceId
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /face/{id}:
+    delete:
+      operationId: FaceController_deleteInventory
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '400':
+          description: Inventory Id Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_8
+      x-google-backend: *ref_1
+    get:
+      operationId: FaceController_getInventoryById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+    patch:
+      operationId: FaceController_patchInventory
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchInventoryDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+    put:
+      operationId: FaceController_updateInventory
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '201':
+          description: The inventory has been updated Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /graphql:
+    post:
+      operationId: GrqphQL_postendpoint
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        '200':
+          description: Content retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Error fetching data
+      tags:
+        - GraphQL
+      x-google-backend: *ref_1
+  /importface:
+    put:
+      operationId: ImportfaceController_importFaceCsv
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportFileDto'
+        description: Place Based Files
+        required: true
+      responses:
+        '201':
+          description: The face and locations has been added/updated successfully.
+        '400':
+          description: >-
+            File is not of type CSV or Empty CSV file or Incorrect File
+            Structure.
+        '403':
+          description: Forbidden.
+      tags:
+        - ImportFace
+      x-google-backend: *ref_1
+  /locations:
+    get:
+      operationId: LocationController_getLocations
+      parameters: []
+      responses:
+        '200':
+          description: The locations list has been retrieved successfully.
+      tags: &ref_7
+        - Locations
+      x-google-backend: *ref_1
+    post:
+      operationId: LocationController_createLocation
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLocationDto'
+        required: true
+      responses:
+        '201':
+          description: The location has been successfully created.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_7
+      x-google-backend: *ref_1
+  /locations/market_details:
+    get:
+      operationId: LocationController_getCsdCMACA
+      parameters:
+        - in: query
+          name: latitude
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: longitude
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The market data has been retrieved successfully.
+      tags: *ref_7
+      x-google-backend: *ref_1
+  /locations/{commb_location_id}:
+    get:
+      operationId: LocationController_getLocationById
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The location has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_7
+      x-google-backend: *ref_1
+    put:
+      operationId: LocationController_updateLocation
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLocationDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationDto'
+          description: ''
+        '201':
+          description: The location has been updated successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '409':
+          description: Location already exist with the provided commb location id
+      tags: *ref_7
+      x-google-backend: *ref_1
+  /locations/{commb_location_id}/{status}:
+    patch:
+      operationId: LocationController_updateLocationStatus
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: status
+          required: true
+          schema:
+            enum:
+              - Active
+              - Disabled
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationDto'
+          description: ''
+        '201':
+          description: The location status has been updated successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_7
+      x-google-backend: *ref_1
   /ooh-product:
     get:
       operationId: OOHProductController_getOOHProducts
@@ -2332,12 +3802,9 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
+      tags: &ref_21
         - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: OOHProductController_createOOHProduct
       parameters: []
@@ -2356,12 +3823,8 @@ paths:
           description: Forbidden.
         '500':
           description: Internal Server Exception
-      tags:
-        - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_21
+      x-google-backend: *ref_1
   /ooh-product/{id}:
     delete:
       operationId: OOHProductController_deleteOOHProduct
@@ -2380,12 +3843,8 @@ paths:
           description: Forbidden.
         '500':
           description: Internal Server Exception
-      tags:
-        - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_21
+      x-google-backend: *ref_1
     patch:
       operationId: OOHProductController_updateOOHProduct
       parameters:
@@ -2409,12 +3868,142 @@ paths:
           description: Forbidden.
         '500':
           description: Internal Server Exception
-      tags:
-        - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_21
+      x-google-backend: *ref_1
+  /organizations:
+    get:
+      operationId: OrganizationController_getOrganizations
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrganizationDto'
+                type: array
+          description: ''
+      tags: &ref_9
+        - Organizations
+      x-google-backend: *ref_1
+    post:
+      operationId: OrganizationController_addOrganization
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDto'
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /organizations/{id}:
+    delete:
+      operationId: OrganizationController_deleteOrganization
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrganizationUserDto'
+                type: array
+          description: Cannot delete organization with existing user(s)
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+    get:
+      operationId: OrganizationController_getOrganizationById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDto'
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+    patch:
+      operationId: OrganizationController_updateOrganization
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchOrganizationDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /organizations/{id}/{status}:
+    patch:
+      operationId: OrganizationController_toggleOrganizationStatus
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: status
+          required: true
+          schema:
+            enum:
+              - Active
+              - Disabled
+            type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
   /partner/facedata/byId:
     get:
       operationId: CirculationController_getCirculations
@@ -2436,10 +4025,7 @@ paths:
           description: The circulation data has been retrieved successfully.
       tags:
         - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /partner/faces/byDate:
     get:
       operationId: PartnerFacesController_getPartnerInventoryByDate
@@ -2459,12 +4045,9 @@ paths:
                   $ref: '#/components/schemas/PartnerFaceData'
                 type: array
           description: The face list has been retrieved successfully.
-      tags:
+      tags: &ref_13
         - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /partner/faces/byId:
     get:
       operationId: PartnerFacesController_getPartnerInventoryByIds
@@ -2487,12 +4070,8 @@ paths:
                   $ref: '#/components/schemas/PartnerFaceData'
                 type: array
           description: The face list has been retrieved successfully.
-      tags:
-        - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_13
+      x-google-backend: *ref_1
   /partner/faces/idsByDate:
     get:
       operationId: PartnerFacesController_getPartnerInventoryIdsByDate
@@ -2512,12 +4091,8 @@ paths:
                   $ref: '#/components/schemas/PartnerFaceId'
                 type: array
           description: The face list has been retrieved successfully.
-      tags:
-        - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_13
+      x-google-backend: *ref_1
   /product:
     get:
       operationId: ProductController_getProducts
@@ -2535,12 +4110,159 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
+      tags: &ref_10
         - Product
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
+    post:
+      operationId: ProductController_createProduct
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductDTO'
+        required: true
+      responses:
+        '201':
+          description: The product was created Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_10
+      x-google-backend: *ref_1
+  /product-group:
+    get:
+      operationId: ProductGroupController_getProductGroups
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ProductGroupDTO'
+                type: array
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_15
+        - ProductGroup
+      x-google-backend: *ref_1
+    post:
+      operationId: ProductGroupController_createProductGroup
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductGroupDTO'
+        required: true
+      responses:
+        '201':
+          description: The product group was created Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_15
+      x-google-backend: *ref_1
+  /product-group/{id}:
+    delete:
+      operationId: ProductGroupController_deleteProductGroup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The product group was deleted Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_15
+      x-google-backend: *ref_1
+    patch:
+      operationId: ProductGroupController_updateProductGroup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchProductGroupDTO'
+        required: true
+      responses:
+        '200':
+          description: The product group was updated Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_15
+      x-google-backend: *ref_1
+  /product/{id}:
+    delete:
+      operationId: ProductController_deleteProduct
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The product was deleted Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_10
+      x-google-backend: *ref_1
+    patch:
+      operationId: ProductController_updateProduct
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchProductDTO'
+        required: true
+      responses:
+        '200':
+          description: The product was updated Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_10
+      x-google-backend: *ref_1
   /profile:
     get:
       operationId: ProfileController_getProfile
@@ -2552,12 +4274,9 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
+      tags: &ref_5
         - Profile
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     put:
       operationId: ProfileController_UpdateProfile
       parameters: []
@@ -2580,12 +4299,8 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - Profile
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_5
+      x-google-backend: *ref_1
   /rf-tool/audience/{id}:
     delete:
       operationId: RFToolController_delete
@@ -2606,12 +4321,9 @@ paths:
           description: Audience Not Found.
         '403':
           description: Forbidden.
-      tags:
+      tags: &ref_2
         - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     get:
       operationId: RFToolController_getAudienceById
       parameters:
@@ -2629,12 +4341,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
     patch:
       operationId: RFToolController_patchAudience
       parameters:
@@ -2658,12 +4366,8 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/audiences:
     post:
       operationId: RFToolController_postAudience
@@ -2681,12 +4385,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/CampaignPlanDto'
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/audiences/list:
     get:
       operationId: RFToolController_getAudience
@@ -2708,12 +4408,8 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/mop/filters:
     get:
       operationId: RFToolController_getFilters
@@ -2748,12 +4444,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/results/mop-for-campaign/{id}:
     get:
       operationId: RFToolController_getMOPQueryResults
@@ -2772,12 +4464,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/{campaignId}/audience/{audienceId}:
     post:
       operationId: RFToolController_addAudienceToCampaign
@@ -2803,12 +4491,8 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/{id}:
     delete:
       operationId: RFToolController_deleteCampaignPlan
@@ -2829,12 +4513,8 @@ paths:
           description: Campaign Plan Not Found.
         '403':
           description: Forbidden.
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
     get:
       operationId: RFToolController_getPlanById
       parameters:
@@ -2852,12 +4532,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
     patch:
       operationId: RFToolController_patchCampaignPlan
       parameters:
@@ -2881,12 +4557,250 @@ paths:
           description: ''
         '404':
           description: ''
+      tags: *ref_2
+      x-google-backend: *ref_1
+  /roles:
+    get:
+      operationId: RoleController_getRoles
+      parameters: []
+      responses:
+        '200':
+          description: The roles list has been retrieved successfully.
+      tags: &ref_12
+        - Roles
+      x-google-backend: *ref_1
+    post:
+      operationId: RoleController_createRole
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleDTO'
+        required: true
+      responses:
+        '201':
+          description: The role has been successfully created.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_12
+      x-google-backend: *ref_1
+  /roles/{id}:
+    delete:
+      operationId: RoleController_deleteRole
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDTO'
+          description: ''
+        '400':
+          description: Role Id Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_12
+      x-google-backend: *ref_1
+    get:
+      operationId: RoleController_getRoleById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDTO'
+          description: ''
+      tags: *ref_12
+      x-google-backend: *ref_1
+    put:
+      operationId: RoleController_updateRole
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleDTO'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDTO'
+          description: ''
+        '201':
+          description: The role has been updated successfully.
+        '400':
+          description: Role Id Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_12
+      x-google-backend: *ref_1
+  /segment-assignment/{commb_face_id}:
+    get:
+      operationId: SegmentAssignmentController_getSegmentsByInventoryId
+      parameters:
+        - in: path
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ApplicableSegmentDto'
+                type: array
+          description: ''
       tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+        - SegmentAssignments
+      x-google-backend: *ref_1
+  /segments:
+    get:
+      operationId: SegmentController_findAll
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: &ref_14
+        - Segments
+      x-google-backend: *ref_1
+    patch:
+      operationId: SegmentController_patch
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchSegmentInput'
+        required: true
+      responses:
+        '200':
+          description: ''
+      tags: *ref_14
+      x-google-backend: *ref_1
+    post:
+      operationId: SegmentController_create
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSegmentDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentDto'
+          description: ''
+      tags: *ref_14
+      x-google-backend: *ref_1
+  /segments/batch:
+    post:
+      operationId: SegmentController_bulkCreate
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: *ref_14
+      x-google-backend: *ref_1
+  /segments/by-composite-keys:
+    get:
+      operationId: SegmentController_find
+      parameters:
+        - in: query
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: from_segment_id
+          required: true
+          schema:
+            maxLength: 20
+            type: string
+        - in: query
+          name: to_segment_id
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: is_digital_measurement
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: *ref_14
+      x-google-backend: *ref_1
+  /segments/{commb_face_id}:
+    get:
+      operationId: SegmentController_getSegmentsByFaceId
+      parameters:
+        - in: path
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: *ref_14
+      x-google-backend: *ref_1
   /task-histories/{task_id}:
     get:
       operationId: TaskHistoryController_findOne
@@ -2910,10 +4824,7 @@ paths:
           description: ''
       tags:
         - TaskHistories
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /tasks:
     get:
       operationId: TaskController_findAll
@@ -2934,12 +4845,9 @@ paths:
                   $ref: '#/components/schemas/TaskDto'
                 type: array
           description: ''
-      tags:
+      tags: &ref_11
         - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: TaskController_create
       parameters: []
@@ -2956,12 +4864,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TaskDto'
           description: ''
-      tags:
-        - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_11
+      x-google-backend: *ref_1
   /tasks/{id}:
     get:
       operationId: TaskController_findOne
@@ -2978,12 +4882,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TaskDto'
           description: ''
-      tags:
-        - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_11
+      x-google-backend: *ref_1
     patch:
       operationId: TaskController_update
       parameters:
@@ -3001,12 +4901,51 @@ paths:
       responses:
         '204':
           description: ''
-      tags:
-        - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_11
+      x-google-backend: *ref_1
+  /tasks/{id}/media:
+    post:
+      operationId: TaskController_updateTaskMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadMediaDto'
+        description: Media Asset Upload
+        required: true
+      responses:
+        '201':
+          description: ''
+        '400':
+          description: Bad Request.
+      tags: *ref_11
+      x-google-backend: *ref_1
+  /tasks/{id}/removeMedia:
+    post:
+      operationId: TaskController_removeTaskMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RemoveMediaDto'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_11
+      x-google-backend: *ref_1
   /usermarketaccesses:
     post:
       operationId: UserMarketAccessController_create
@@ -3024,12 +4963,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserMarketAccessDTO'
           description: ''
-      tags:
+      tags: &ref_20
         - UserMarketAccesses
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /usermarketaccesses/{id}:
     delete:
       operationId: UserMarketAccessController_delete
@@ -3050,12 +4986,8 @@ paths:
           description: User Market Access Not Found.
         '403':
           description: Forbidden.
-      tags:
-        - UserMarketAccesses
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_20
+      x-google-backend: *ref_1
     put:
       operationId: UserMarketAccessController_update
       parameters:
@@ -3077,12 +5009,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserMarketAccessDTO'
           description: ''
-      tags:
-        - UserMarketAccesses
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_20
+      x-google-backend: *ref_1
   /users:
     get:
       operationId: UserController_getUsers
@@ -3090,12 +5018,9 @@ paths:
       responses:
         '200':
           description: The users list has been retrieved successfully.
-      tags:
+      tags: &ref_4
         - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: UserController_createUser
       parameters: []
@@ -3116,12 +5041,8 @@ paths:
           description: User already exist with the provided email address
         '500':
           description: Error creating user on Auth0
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_4
+      x-google-backend: *ref_1
     put:
       operationId: UserController_updateUser
       parameters: []
@@ -3146,12 +5067,8 @@ paths:
           description: Forbidden.
         '409':
           description: User already exist with the provided email address
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_4
+      x-google-backend: *ref_1
   /users/{id}:
     get:
       operationId: UserController_getUserById
@@ -3168,12 +5085,8 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_4
+      x-google-backend: *ref_1
   /users/{id}/{status}:
     patch:
       operationId: UserController_updateUserStatus
@@ -3204,12 +5117,8 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_4
+      x-google-backend: *ref_1
   /viewmanagers:
     get:
       operationId: ViewManagerController_findAllByUser
@@ -3223,12 +5132,9 @@ paths:
                   $ref: '#/components/schemas/GetViewManagerDto'
                 type: array
           description: ''
-      tags:
+      tags: &ref_19
         - ViewManagers
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: ViewManagerController_create
       parameters: []
@@ -3245,12 +5151,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ViewManagerDto'
           description: ''
-      tags:
-        - ViewManagers
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_19
+      x-google-backend: *ref_1
   /viewmanagers/{id}:
     put:
       operationId: ViewManagerController_update
@@ -3273,12 +5175,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/ViewManagerDto'
           description: ''
-      tags:
-        - ViewManagers
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_19
+      x-google-backend: *ref_1
 security:
   - bearer: []
 servers:
