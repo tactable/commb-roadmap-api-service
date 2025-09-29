@@ -1412,6 +1412,9 @@
           "dp_05": {
             "type": "number"
           },
+          "hr_00": {
+            "type": "number"
+          },
           "hr_01": {
             "type": "number"
           },
@@ -1485,6 +1488,7 @@
         "required": [
           "all",
           "day",
+          "hr_00",
           "hr_01",
           "hr_02",
           "hr_03",
