@@ -1,35 +1,40 @@
 components:
   schemas:
+    AggregateObject:
+      properties:
+        count:
+          type: number
+      type: object
     ApplicableSegmentDto:
       properties:
-        DIRECTION:
+        direction:
           type: string
-        GEOMETRY:
+        geometry:
           type: object
-        PED_SPEED:
+        ped_speed:
           type: number
-        PED_VOLUME:
+        ped_volume:
           type: number
-        SEGMENT:
+        segment:
           type: string
-        STREET_NAME:
+        street_name:
           type: string
-        TOTAL_VOLUME:
+        total_volume:
           type: number
-        VEH_SPEED:
+        veh_speed:
           type: number
-        VEH_VOLUME:
+        veh_volume:
           type: number
       required:
-        - SEGMENT
-        - GEOMETRY
-        - DIRECTION
-        - PED_VOLUME
-        - VEH_VOLUME
-        - TOTAL_VOLUME
-        - VEH_SPEED
-        - PED_SPEED
-        - STREET_NAME
+        - segment
+        - geometry
+        - direction
+        - ped_volume
+        - veh_volume
+        - total_volume
+        - veh_speed
+        - ped_speed
+        - street_name
       type: object
     AudienceDTO:
       properties:
@@ -67,30 +72,43 @@ components:
         - face_ids
         - rules
       type: object
-    AudienceProfileReachFrequencyHTTPBody:
+    AudienceProfileReachFrequencyFaceInput:
+      properties:
+        cost:
+          $ref: '#/components/schemas/FaceCost'
+        face_id:
+          type: number
+        reach_targets:
+          $ref: >-
+            #/components/schemas/AudienceProfileReachFrequencyFaceReachTargetInput
+      required:
+        - face_id
+        - reach_targets
+        - cost
+      type: object
+    AudienceProfileReachFrequencyFaceReachTargetInput:
       properties:
         effective_frequency:
-          description: Effective Frequency
           type: number
-        face_ids:
-          description: Face ids as an array of integers
+        weeks:
           items:
             type: number
-          type: array
-        rules:
-          allOf:
-            - $ref: '#/components/schemas/RuleModelDehydratedDto'
-          description: Rules from syncfusion/query builder
-        weeks:
-          description: Weeks
-          items:
-            type: string
           type: array
       required:
         - weeks
         - effective_frequency
-        - face_ids
-        - rules
+      type: object
+    AudienceProfileReachFrequencyHTTPBody:
+      properties:
+        faces:
+          items:
+            $ref: '#/components/schemas/AudienceProfileReachFrequencyFaceInput'
+          type: array
+        sort_order:
+          type: string
+      required:
+        - sort_order
+        - faces
       type: object
     AudiencesDto:
       properties:
@@ -116,12 +134,13 @@ components:
         - id
         - created_at
         - active
-        - created_by_user
         - name
         - audience_type
       type: object
     CalculationData:
       properties:
+        calculation_time:
+          type: string
         calculation_version:
           type: string
         commb_face_id:
@@ -130,17 +149,15 @@ components:
           type: string
         digital:
           $ref: '#/components/schemas/DigitalImpressionsData'
+        in_market_percentage:
+          type: number
         last_updated_at:
           type: string
         static:
           $ref: '#/components/schemas/StaticCirculationData'
       required:
         - calculation_version
-        - data_version
         - commb_face_id
-        - last_updated_at
-        - static
-        - digital
       type: object
     CampaignPlanDto:
       properties:
@@ -156,6 +173,13 @@ components:
           $ref: '#/components/schemas/PlanDTO'
         plan_name:
           type: string
+        plan_type:
+          enum:
+            - MAPPING
+            - RF
+            - ALL_MOP
+            - ALL_FACES
+          type: string
         updated_at:
           type: string
         updated_by:
@@ -163,7 +187,6 @@ components:
       required:
         - campaign_id
         - created_at
-        - plan
         - active
         - created_by
         - plan_name
@@ -184,10 +207,40 @@ components:
       type: object
     CartoMapData:
       properties:
+        aimsCirculationLevels:
+          items:
+            type: number
+          type: array
+        circulationLevels:
+          items:
+            type: number
+          type: array
         geoJsonData:
           $ref: '#/components/schemas/GeoJsonDto'
+        impressionLevels:
+          items:
+            type: number
+          type: array
+        indexLevels:
+          items:
+            type: number
+          type: array
+        reachLevels:
+          items:
+            type: number
+          type: array
+        viewport:
+          items:
+            type: number
+          type: array
       required:
         - geoJsonData
+        - viewport
+        - aimsCirculationLevels
+        - circulationLevels
+        - impressionLevels
+        - indexLevels
+        - reachLevels
       type: object
     CartoPoiData:
       properties:
@@ -200,21 +253,37 @@ components:
       properties:
         in:
           $ref: '#/components/schemas/In'
-      required:
-        - in
+        stringSearch:
+          $ref: '#/components/schemas/In'
+      type: object
+    CartoSearchInput:
+      properties:
+        attribute:
+          type: string
+        query:
+          type: string
       type: object
     CirculationData:
       properties:
-        pedestrian:
+        consolidated:
           $ref: '#/components/schemas/WeeklyImpression'
+        in_market_total:
+          type: object
+        pct_pedestrian:
+          $ref: '#/components/schemas/WeeklyImpression'
+        pedestrian:
+          type: object
         total:
           $ref: '#/components/schemas/WeeklyImpression'
         vehicular:
           $ref: '#/components/schemas/WeeklyImpression'
+      type: object
+    CmaCaByCmaCaDto:
+      properties:
+        cmaname:
+          type: string
       required:
-        - total
-        - vehicular
-        - pedestrian
+        - cmaname
       type: object
     CmaCaIdDto:
       properties:
@@ -229,6 +298,8 @@ components:
           type: string
         cma_ca_id:
           type: number
+        cma_stats:
+          $ref: '#/components/schemas/CmaStats'
         csd_name:
           type: string
         csduid:
@@ -238,6 +309,17 @@ components:
         - ca_cma_name
         - csduid
         - csd_name
+        - cma_stats
+      type: object
+    CmaStats:
+      properties:
+        centroid:
+          type: object
+        geometry:
+          type: object
+      required:
+        - geometry
+        - centroid
       type: object
     CommentDto:
       properties:
@@ -286,6 +368,25 @@ components:
       required:
         - name
       type: object
+    CreateCampaignPlanDto:
+      properties:
+        created_by:
+          type: number
+        plan:
+          $ref: '#/components/schemas/PlanDTO'
+        plan_name:
+          type: string
+        plan_type:
+          enum:
+            - MAPPING
+            - RF
+            - ALL_MOP
+            - ALL_FACES
+          type: string
+      required:
+        - created_by
+        - plan_name
+      type: object
     CreateCommentDto:
       properties:
         attachment:
@@ -294,60 +395,332 @@ components:
           type: object
         task_id:
           type: number
-        user:
-          $ref: '#/components/schemas/CommentUser'
       required:
         - task_id
         - comment_data
         - attachment
-        - user
       type: object
-    CreateInventoryDto:
+    CreateFaceDto:
       properties:
+        address:
+          type: string
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
+        audience_profile:
+          type: number
+        circ_type_1:
+          type: string
+        circ_type_1_aadt:
+          type: number
+        circ_type_1_flow:
+          type: number
+        circ_type_1_stn:
+          type: string
+        circ_type_2:
+          type: string
+        circ_type_2_aadt:
+          type: number
+        circ_type_2_flow:
+          type: number
+        circ_type_2_stn:
+          type: string
+        circ_type_3:
+          type: string
+        circ_type_3_aadt:
+          type: number
+        circ_type_3_flow:
+          type: number
+        circ_type_3_stn:
+          type: string
+        circ_type_p:
+          type: string
+        circ_type_p_aadt:
+          type: number
+        circ_type_p_flow:
+          type: number
+        circ_type_p_stn:
+          type: string
         commb_location_id:
+          type: number
+        created_at:
+          type: string
+        created_by:
           type: number
         external_face_numeric:
           type: string
         facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
           type: string
+        gender:
+          type: string
+        height:
+          type: number
         illumination_from:
           maximum: 24
           minimum: 0
           type: number
         illumination_status:
+          enum:
+            - Lit
+            - Unlit
+            - Partial
           type: string
         illumination_to:
           maximum: 24
           minimum: 0
           type: number
+        internal_facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
         is_trio:
           maximum: 1
           minimum: 0
           type: number
-        media_assets:
+        latitude:
+          type: number
+        locale:
+          type: string
+        locator:
+          type: string
+        longitude:
+          type: number
+        network_id:
+          type: number
+        no_circulation:
+          type: boolean
+        notes:
           type: string
         num_of_spots:
           type: number
-        organizationId:
-          type: number
         placing:
+          maxLength: 1
+          minLength: 1
           type: string
-        product_group_id:
-          type: number
         product_id:
           type: number
         spot_time:
           type: number
         status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Review
+            - Under Construction
+            - Deleted
+          type: string
+        unit_of_measure:
           type: string
         updated_by:
           type: number
+        width:
+          type: number
+      required:
+        - commb_location_id
+        - external_face_numeric
+        - product_id
+        - illumination_status
+        - illumination_from
+        - illumination_to
+        - is_trio
+        - status
+      type: object
+    CreateInventoryDto:
+      properties:
+        address:
+          type: string
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
+        audience_profile:
+          type: number
+        circ_type_1:
+          type: string
+        circ_type_1_aadt:
+          type: number
+        circ_type_1_flow:
+          type: number
+        circ_type_1_stn:
+          type: string
+        circ_type_2:
+          type: string
+        circ_type_2_aadt:
+          type: number
+        circ_type_2_flow:
+          type: number
+        circ_type_2_stn:
+          type: string
+        circ_type_3:
+          type: string
+        circ_type_3_aadt:
+          type: number
+        circ_type_3_flow:
+          type: number
+        circ_type_3_stn:
+          type: string
+        circ_type_p:
+          type: string
+        circ_type_p_aadt:
+          type: number
+        circ_type_p_flow:
+          type: number
+        circ_type_p_stn:
+          type: string
+        commb_face_id:
+          type: number
+        commb_location_id:
+          type: number
+        created_at:
+          type: string
+        created_by:
+          type: number
+        external_face_numeric:
+          type: string
+        facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
+        gender:
+          type: string
+        height:
+          type: number
+        illumination_from:
+          maximum: 24
+          minimum: 0
+          type: number
+        illumination_status:
+          enum:
+            - Lit
+            - Unlit
+            - Partial
+          type: string
+        illumination_to:
+          maximum: 24
+          minimum: 0
+          type: number
+        internal_facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
+        is_trio:
+          maximum: 1
+          minimum: 0
+          type: number
+        latitude:
+          type: number
+        locale:
+          type: string
+        locator:
+          type: string
+        longitude:
+          type: number
+        network_id:
+          type: number
+        no_circulation:
+          type: boolean
+        notes:
+          type: string
+        num_of_spots:
+          type: number
+        placing:
+          maxLength: 1
+          minLength: 1
+          type: string
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Review
+            - Under Construction
+            - Deleted
+          type: string
+        unit_of_measure:
+          type: string
+        updated_by:
+          type: number
+        width:
+          type: number
       required:
         - external_face_numeric
-        - commb_location_id
         - product_id
-        - product_group_id
-        - facing_direction
         - illumination_status
         - illumination_from
         - illumination_to
@@ -356,37 +729,15 @@ components:
       type: object
     CreateLocationDto:
       properties:
-        bearing:
-          enum:
-            - AT
-            - S/O
-            - W/O
-            - E/O
-            - N/O
-            - OPP
-            - AND
-          type: string
-        ca_cma_name:
-          type: string
-        cma_ca_type:
-          maxLength: 3
-          type: string
-        cross_artery:
-          maxLength: 150
-          type: string
-        csd_name:
-          type: string
         description:
           maxLength: 255
           type: string
-        distance:
-          type: number
         external_location_numeric:
           maxLength: 20
           type: string
         faces:
           items:
-            type: string
+            $ref: '#/components/schemas/CreateInventoryDto'
           type: array
         latitude:
           type: number
@@ -395,36 +746,19 @@ components:
           type: string
         longitude:
           type: number
-        primary_artery:
-          maxLength: 150
-          type: string
-        primary_side:
-          enum:
-            - NS
-            - WS
-            - ES
-            - SS
-            - NWC
-            - NEC
-            - SWC
-            - SEC
-          type: string
-        province:
-          maxLength: 2
-          type: string
         status:
           enum:
             - Active
+            - Estimate
             - Disabled
+            - Under Construction
+            - Deleted
           type: string
       required:
         - external_location_numeric
         - latitude
         - longitude
         - location_name
-        - ca_cma_name
-        - cma_ca_type
-        - csd_name
       type: object
     CreateMarketDto:
       properties:
@@ -471,6 +805,17 @@ components:
         - type
         - status
       type: object
+    CreatePoiMetadataDto:
+      properties:
+        file:
+          format: binary
+          type: string
+        name:
+          type: string
+      required:
+        - file
+        - name
+      type: object
     CreateProductDTO:
       properties:
         buffer_radius:
@@ -496,6 +841,22 @@ components:
         - is_digital
         - created_by
       type: object
+    CreateProductGroupDTO:
+      properties:
+        created_by:
+          type: number
+        media_type_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+      required:
+        - created_by
+        - media_type_id
+        - product_group_name
+        - product_group_name_fr
+      type: object
     CreateRoleDTO:
       properties:
         name:
@@ -511,6 +872,8 @@ components:
       type: object
     CreateSegmentDto:
       properties:
+        active:
+          type: boolean
         commb_face_id:
           type: number
         distance:
@@ -520,6 +883,8 @@ components:
           type: string
         from_to_segments:
           type: string
+        is_digital_measurement:
+          type: boolean
         pct_traffic:
           type: number
         polyline:
@@ -551,6 +916,9 @@ components:
             - generic_request
             - update_face
             - update_location
+            - circulation_review
+            - estimate_review
+            - bulk_upload_request
           type: string
       required:
         - task_type
@@ -602,6 +970,13 @@ components:
     CreateViewManagerDto:
       properties: {}
       type: object
+    CsdByCsdDto:
+      properties:
+        csd_name:
+          type: string
+      required:
+        - csd_name
+      type: object
     CsdUidDto:
       properties:
         csd_name:
@@ -612,6 +987,20 @@ components:
     DailyImpression:
       properties:
         all:
+          type: number
+        day:
+          type: string
+        dp_01:
+          type: number
+        dp_02:
+          type: number
+        dp_03:
+          type: number
+        dp_04:
+          type: number
+        dp_05:
+          type: number
+        hr_00:
           type: number
         hr_01:
           type: number
@@ -661,6 +1050,8 @@ components:
           type: number
       required:
         - all
+        - day
+        - hr_00
         - hr_01
         - hr_02
         - hr_03
@@ -684,110 +1075,86 @@ components:
         - hr_21
         - hr_22
         - hr_23
+        - dp_01
+        - dp_02
+        - dp_03
+        - dp_04
+        - dp_05
+      type: object
+    DataManagerInput:
+      properties: {}
       type: object
     DigitalImpressionsData:
       properties:
+        circulation:
+          $ref: '#/components/schemas/CirculationData'
+        circulations_pedestrian:
+          type: number
+        circulations_total:
+          type: number
+        circulations_vehicular:
+          type: number
+        dir:
+          $ref: '#/components/schemas/CirculationData'
+        dwell_time:
+          $ref: '#/components/schemas/CirculationData'
         screen_impressions:
           $ref: '#/components/schemas/CirculationData'
+        screen_impressions_pedestrian:
+          type: number
+        screen_impressions_total:
+          type: number
+        screen_impressions_vehicular:
+          type: number
         spot_ad_play_impressions:
           $ref: '#/components/schemas/CirculationData'
+        spot_ad_play_pedestrian:
+          type: number
+        spot_ad_play_total:
+          type: number
+        spot_ad_play_vehicular:
+          type: number
+        spot_exposures:
+          $ref: '#/components/schemas/CirculationData'
+        spot_exposures_pedestrian:
+          type: number
+        spot_exposures_total:
+          type: number
+        spot_exposures_vehicular:
+          type: number
       required:
+        - dir
+        - dwell_time
         - screen_impressions
         - spot_ad_play_impressions
+        - screen_impressions_pedestrian
+        - screen_impressions_vehicular
+        - screen_impressions_total
+        - spot_ad_play_pedestrian
+        - spot_ad_play_vehicular
+        - spot_ad_play_total
+        - spot_exposures
+        - circulation
       type: object
-    EditableLocationDto:
+    DisableAccessInput:
       properties:
-        bearing:
-          enum:
-            - AT
-            - S/O
-            - W/O
-            - E/O
-            - N/O
-            - OPP
-            - AND
-          type: string
-        ca_cma_name:
-          type: string
-        cma_ca:
+        id:
           type: number
-        cma_ca_id:
-          $ref: '#/components/schemas/CmaCaIdDto'
-        cma_ca_type:
-          maxLength: 3
-          type: string
-        commb_location_id:
+        share_created_by:
           type: number
-        created_at:
-          type: string
-        created_by:
-          type: number
-        cross_artery:
-          maxLength: 150
-          type: string
-        csd:
-          type: number
-        csd_name:
-          type: string
-        csduid:
-          $ref: '#/components/schemas/CsdUidDto'
-        description:
-          maxLength: 255
-          type: string
-        distance:
-          type: number
-        external_location_numeric:
-          maxLength: 20
-          type: string
-        geographic_code:
-          type: number
-        latitude:
-          type: number
-        location_name:
-          maxLength: 1000
-          type: string
-        longitude:
-          type: number
-        operator_id:
-          description: Foreign key, associates to id from organizations
-          type: number
-        primary_artery:
-          maxLength: 150
-          type: string
-        primary_side:
-          enum:
-            - NS
-            - WS
-            - ES
-            - SS
-            - NWC
-            - NEC
-            - SWC
-            - SEC
-          type: string
-        province:
-          maxLength: 2
-          type: string
-        region:
-          type: number
-        status:
-          enum:
-            - Active
-            - Disabled
-          type: string
-        timezone_id:
-          maxLength: 20
-          type: string
-        updated_at:
-          type: string
-        updated_by:
-          type: number
+      required:
+        - id
+        - share_created_by
       type: object
     EditableUserDto:
       properties:
         email_address:
           maxLength: 50
           type: string
+        environment_access:
+          items:
+            type: string
+          type: array
         first_name:
           type: string
         last_name:
@@ -805,6 +1172,100 @@ components:
         - email_address
         - status
         - user_role
+        - environment_access
+      type: object
+    EmailShareInput:
+      properties:
+        emails:
+          items:
+            type: string
+          type: array
+        share_created_by:
+          type: number
+        share_id:
+          type: number
+        share_type:
+          enum:
+            - map_view
+            - rf_plan
+            - poi
+          type: string
+      required:
+        - share_id
+        - share_type
+        - emails
+        - share_created_by
+      type: object
+    ExcludeFromReportDTO:
+      properties:
+        faces:
+          items:
+            $ref: '#/components/schemas/FaceResponse'
+          type: array
+        mops:
+          items:
+            $ref: '#/components/schemas/MOPExclusionDto'
+          type: array
+      type: object
+    ExclusionProductDto:
+      properties:
+        circulation:
+          type: number
+        comparisonId:
+          type: string
+        cost:
+          type: number
+        face_count:
+          type: number
+        flightingObjectives:
+          items:
+            $ref: '#/components/schemas/FlightingObjectivesResponse'
+          type: array
+        id:
+          type: number
+        max_daily_grps:
+          type: number
+        max_daily_impressions:
+          type: number
+        max_faces:
+          type: number
+        max_weekly_grps:
+          type: number
+        min_daily_grps:
+          type: number
+        min_daily_impressions:
+          type: number
+        min_faces:
+          type: number
+        min_weekly_grps:
+          type: number
+        objectives:
+          $ref: '#/components/schemas/ObjectivesResponse'
+        product:
+          type: string
+        spot_count:
+          type: number
+        spot_length:
+          type: number
+        weeks:
+          items:
+            type: number
+          type: array
+      required:
+        - product
+        - id
+        - face_count
+        - circulation
+      type: object
+    ExportFaceSortInput:
+      properties:
+        direction:
+          type: string
+        name:
+          type: string
+      required:
+        - name
+        - direction
       type: object
     ExportInventory:
       properties:
@@ -813,18 +1274,102 @@ components:
       required:
         - url
       type: object
-    FaceCalculations:
+    FaceCalculationRequestBody:
       properties:
-        calculation_data:
-          $ref: '#/components/schemas/CalculationData'
-        calculation_version:
-          type: string
-        commb_face_id:
+        face_ids:
+          items:
+            type: number
+          type: array
+        update_inventory_version:
+          default: false
+          type: boolean
+      required:
+        - face_ids
+      type: object
+    FaceCost:
+      properties:
+        FourWkFaceCost:
           type: number
       required:
-        - commb_face_id
-        - calculation_version
-        - calculation_data
+        - FourWkFaceCost
+      type: object
+    FaceExportInput:
+      properties:
+        columns:
+          items:
+            type: string
+          type: array
+        requiresCounts:
+          type: boolean
+        search:
+          type: string
+        skip:
+          type: number
+        sorted:
+          items:
+            $ref: '#/components/schemas/ExportFaceSortInput'
+          type: array
+        table:
+          type: string
+        take:
+          type: number
+        where:
+          type: string
+      type: object
+    FaceExportRequestBody:
+      properties:
+        filter:
+          items:
+            type: object
+          type: array
+      type: object
+    FaceQueryResponseDto:
+      properties:
+        faces:
+          items:
+            $ref: '#/components/schemas/FaceResponse'
+          type: array
+      required:
+        - faces
+      type: object
+    FaceResponse:
+      properties:
+        circulation:
+          type: number
+        cost:
+          type: number
+        external_face_numeric:
+          type: string
+        face_count:
+          type: number
+        face_id:
+          type: number
+        flightingObjectives:
+          items:
+            $ref: '#/components/schemas/FlightingObjectivesResponse'
+          type: array
+        location_name:
+          type: string
+        market:
+          type: string
+        market_id:
+          type: number
+        num_of_spots:
+          type: number
+        operator:
+          type: string
+        operator_id:
+          type: number
+        product:
+          type: string
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        weeks:
+          items:
+            type: number
+          type: array
       type: object
     Feature:
       properties:
@@ -843,32 +1388,152 @@ components:
       type: object
     FetchCartoDataInput:
       properties:
+        aims_circulation:
+          type: boolean
+        audience_index:
+          type: boolean
+        audience_profile:
+          $ref: '#/components/schemas/CartoQuery'
+        audience_reach:
+          type: boolean
+        circulation:
+          type: boolean
         geometry:
           type: object
+        has_network:
+          $ref: '#/components/schemas/CartoQuery'
+        impressions:
+          type: boolean
+        inventory_commb_face_id:
+          $ref: '#/components/schemas/CartoQuery'
+        inventory_external_face_numeric:
+          $ref: '#/components/schemas/CartoQuery'
         inventory_facing_direction:
           $ref: '#/components/schemas/CartoQuery'
         inventory_illumination_status:
           $ref: '#/components/schemas/CartoQuery'
         location_cma_ca_name:
           $ref: '#/components/schemas/CartoQuery'
+        location_commb_location_id:
+          $ref: '#/components/schemas/CartoQuery'
         location_csd_name:
+          $ref: '#/components/schemas/CartoQuery'
+        location_external_location_numeric:
+          $ref: '#/components/schemas/CartoQuery'
+        location_latitude:
+          $ref: '#/components/schemas/CartoQuery'
+        location_location_name:
+          $ref: '#/components/schemas/CartoQuery'
+        location_longitude:
+          $ref: '#/components/schemas/CartoQuery'
+        location_player_network:
           $ref: '#/components/schemas/CartoQuery'
         location_province:
           $ref: '#/components/schemas/CartoQuery'
         media_types_media_type_name:
           $ref: '#/components/schemas/CartoQuery'
+        network_id:
+          $ref: '#/components/schemas/CartoQuery'
+        network_name:
+          $ref: '#/components/schemas/CartoQuery'
         organizations_name:
           $ref: '#/components/schemas/CartoQuery'
         poi:
           $ref: '#/components/schemas/LocationInventoryPoiFilters'
+        product_group_product_group_name:
+          $ref: '#/components/schemas/CartoQuery'
         products_is_digital:
           $ref: '#/components/schemas/CartoQuery'
         products_product_name:
           $ref: '#/components/schemas/CartoQuery'
+        proximity_search:
+          $ref: '#/components/schemas/ProximitySearch'
+        search:
+          $ref: '#/components/schemas/CartoSearchInput'
+        targetAudience:
+          type: string
         viewport:
           items:
             type: number
           type: array
+      type: object
+    FetchCartoDataInputWithCirculationType:
+      properties:
+        aims_circulation:
+          type: boolean
+        audience_index:
+          type: boolean
+        audience_profile:
+          $ref: '#/components/schemas/CartoQuery'
+        audience_reach:
+          type: boolean
+        circulation:
+          type: boolean
+        circulation_type:
+          enum:
+            - aims_circulation
+            - new_circulation
+          type: string
+        geometry:
+          type: object
+        has_network:
+          $ref: '#/components/schemas/CartoQuery'
+        impressions:
+          type: boolean
+        inventory_commb_face_id:
+          $ref: '#/components/schemas/CartoQuery'
+        inventory_external_face_numeric:
+          $ref: '#/components/schemas/CartoQuery'
+        inventory_facing_direction:
+          $ref: '#/components/schemas/CartoQuery'
+        inventory_illumination_status:
+          $ref: '#/components/schemas/CartoQuery'
+        location_cma_ca_name:
+          $ref: '#/components/schemas/CartoQuery'
+        location_commb_location_id:
+          $ref: '#/components/schemas/CartoQuery'
+        location_csd_name:
+          $ref: '#/components/schemas/CartoQuery'
+        location_external_location_numeric:
+          $ref: '#/components/schemas/CartoQuery'
+        location_latitude:
+          $ref: '#/components/schemas/CartoQuery'
+        location_location_name:
+          $ref: '#/components/schemas/CartoQuery'
+        location_longitude:
+          $ref: '#/components/schemas/CartoQuery'
+        location_player_network:
+          $ref: '#/components/schemas/CartoQuery'
+        location_province:
+          $ref: '#/components/schemas/CartoQuery'
+        media_types_media_type_name:
+          $ref: '#/components/schemas/CartoQuery'
+        network_id:
+          $ref: '#/components/schemas/CartoQuery'
+        network_name:
+          $ref: '#/components/schemas/CartoQuery'
+        organizations_name:
+          $ref: '#/components/schemas/CartoQuery'
+        poi:
+          $ref: '#/components/schemas/LocationInventoryPoiFilters'
+        product_group_product_group_name:
+          $ref: '#/components/schemas/CartoQuery'
+        products_is_digital:
+          $ref: '#/components/schemas/CartoQuery'
+        products_product_name:
+          $ref: '#/components/schemas/CartoQuery'
+        proximity_search:
+          $ref: '#/components/schemas/ProximitySearch'
+        search:
+          $ref: '#/components/schemas/CartoSearchInput'
+        targetAudience:
+          type: string
+        viewport:
+          items:
+            type: number
+          type: array
+      required:
+        - circulation_type
       type: object
     FilterQueryReponseDto:
       properties:
@@ -895,6 +1560,8 @@ components:
           items:
             type: boolean
           type: array
+        cost:
+          type: number
         type:
           type: string
         uuid:
@@ -934,6 +1601,15 @@ components:
         - coordinates
         - type
       type: object
+    GetStreetViewUrlRequestBody:
+      properties:
+        face_ids:
+          items:
+            type: number
+          type: array
+      required:
+        - face_ids
+      type: object
     GetViewManagerDto:
       properties:
         created_at:
@@ -942,6 +1618,8 @@ components:
           type: number
         poi_data:
           type: object
+        proximity_search:
+          $ref: '#/components/schemas/ProximitySearch'
         status:
           enum:
             - Active
@@ -951,6 +1629,8 @@ components:
           type: string
         updated_at:
           type: string
+        user:
+          $ref: '#/components/schemas/UserDto'
         user_id:
           type: number
         value:
@@ -966,6 +1646,7 @@ components:
         - status
         - created_at
         - poi_data
+        - user
       type: object
     ImportFileDto:
       properties:
@@ -987,31 +1668,157 @@ components:
         - values
         - owner
       type: object
+    InventoriesAggregateObject:
+      properties:
+        aggregate:
+          $ref: '#/components/schemas/AggregateObject'
+      type: object
+    InventoryCalculationsSummary:
+      properties:
+        calculations_total:
+          type: number
+        total_ped:
+          type: number
+        total_veh:
+          type: number
+      type: object
     InventoryDto:
       properties:
+        address:
+          type: string
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
+        audience_profile:
+          type: number
+        calculation_version:
+          type: string
+        circ_type_1:
+          type: string
+        circ_type_1_aadt:
+          type: number
+        circ_type_1_flow:
+          type: number
+        circ_type_1_stn:
+          type: string
+        circ_type_2:
+          type: string
+        circ_type_2_aadt:
+          type: number
+        circ_type_2_flow:
+          type: number
+        circ_type_2_stn:
+          type: string
+        circ_type_3:
+          type: string
+        circ_type_3_aadt:
+          type: number
+        circ_type_3_flow:
+          type: number
+        circ_type_3_stn:
+          type: string
+        circ_type_p:
+          type: string
+        circ_type_p_aadt:
+          type: number
+        circ_type_p_flow:
+          type: number
+        circ_type_p_stn:
+          type: string
         commb_face_id:
           type: number
         commb_location_id:
           type: number
+        created_at:
+          type: string
+        created_by:
+          type: number
         external_face_numeric:
           type: string
         facing_direction:
+          enum: &ref_26
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
           type: string
+        gender:
+          type: string
+        height:
+          type: number
         illumination_from:
           maximum: 24
           minimum: 0
           type: number
         illumination_status:
+          enum: &ref_27
+            - Lit
+            - Unlit
+            - Partial
           type: string
         illumination_to:
           maximum: 24
           minimum: 0
           type: number
+        internal_facing_direction:
+          enum: &ref_29
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
         is_trio:
           maximum: 1
           minimum: 0
           type: number
+        latitude:
+          type: number
+        locale:
+          type: string
+        locator:
+          type: string
+        longitude:
+          type: number
+        media_asset_url:
+          type: string
         media_assets:
+          items:
+            type: object
+          type: array
+        network_id:
+          type: number
+        no_circulation:
+          type: boolean
+        notes:
           type: string
         num_of_spots:
           type: number
@@ -1022,6 +1829,8 @@ components:
         physical_status:
           type: string
         placing:
+          maxLength: 1
+          minLength: 1
           type: string
         product_group_id:
           type: number
@@ -1030,22 +1839,248 @@ components:
         spot_time:
           type: number
         status:
+          enum: &ref_28
+            - Active
+            - Estimate
+            - Disabled
+            - Under Review
+            - Under Construction
+            - Deleted
+          type: string
+        unit_of_measure:
+          type: string
+        updated_at:
           type: string
         updated_by:
           type: number
+        width:
+          type: number
       required:
-        - commb_face_id
         - external_face_numeric
-        - commb_location_id
         - product_id
-        - product_group_id
-        - facing_direction
         - illumination_status
         - illumination_from
         - illumination_to
         - is_trio
         - status
         - organizationName
+      type: object
+    InventoryEntity:
+      properties:
+        address:
+          type: string
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
+        audience_profile:
+          type: number
+        calculation_version:
+          type: string
+        calculations:
+          $ref: '#/components/schemas/InventoryCalculationsSummary'
+        circ_type_1:
+          type: string
+        circ_type_1_aadt:
+          type: number
+        circ_type_1_flow:
+          type: number
+        circ_type_1_stn:
+          type: string
+        circ_type_2:
+          type: string
+        circ_type_2_aadt:
+          type: number
+        circ_type_2_flow:
+          type: number
+        circ_type_2_stn:
+          type: string
+        circ_type_3:
+          type: string
+        circ_type_3_aadt:
+          type: number
+        circ_type_3_flow:
+          type: number
+        circ_type_3_stn:
+          type: string
+        circ_type_p:
+          type: string
+        circ_type_p_aadt:
+          type: number
+        circ_type_p_flow:
+          type: number
+        circ_type_p_stn:
+          type: string
+        commb_face_id:
+          type: number
+        commb_location_id:
+          type: number
+        created_at:
+          type: string
+        created_by:
+          type: number
+        external_face_numeric:
+          type: string
+        face_calculations:
+          $ref: '#/components/schemas/PartnerCalculations'
+        facing_direction:
+          enum: *ref_26
+          type: string
+        gender:
+          type: string
+        height:
+          type: number
+        illumination_from:
+          maximum: 24
+          minimum: 0
+          type: number
+        illumination_status:
+          enum: *ref_27
+          type: string
+        illumination_to:
+          maximum: 24
+          minimum: 0
+          type: number
+        internal_facing_direction:
+          enum: *ref_29
+          type: string
+        is_trio:
+          maximum: 1
+          minimum: 0
+          type: number
+        latitude:
+          type: number
+        locale:
+          type: string
+        location:
+          $ref: '#/components/schemas/InventoryLocation'
+        locator:
+          type: string
+        longitude:
+          type: number
+        media_asset_url:
+          type: string
+        media_assets:
+          items:
+            type: object
+          type: array
+        network_id:
+          type: number
+        no_circulation:
+          type: boolean
+        notes:
+          type: string
+        num_of_spots:
+          type: number
+        organizationId:
+          type: number
+        organizationName:
+          type: string
+        physical_status:
+          type: string
+        placing:
+          maxLength: 1
+          minLength: 1
+          type: string
+        product:
+          $ref: '#/components/schemas/InventoryProduct'
+        product_group:
+          $ref: '#/components/schemas/InventoryProductGroup'
+        product_group_id:
+          type: number
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        status:
+          enum: *ref_28
+          type: string
+        unit_of_measure:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+        width:
+          type: number
+      required:
+        - external_face_numeric
+        - product_id
+        - illumination_status
+        - illumination_from
+        - illumination_to
+        - is_trio
+        - status
+        - organizationName
+        - location
+        - product
+        - product_group
+      type: object
+    InventoryLocation:
+      properties:
+        external_location_numeric:
+          type: string
+        latitude:
+          type: number
+        location_name:
+          type: string
+        longitude:
+          type: number
+        organization:
+          $ref: '#/components/schemas/InventoryOrganization'
+        status:
+          type: string
+      required:
+        - status
+        - location_name
+        - latitude
+        - longitude
+        - external_location_numeric
+        - organization
+      type: object
+    InventoryOrganization:
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+      required:
+        - id
+        - name
+      type: object
+    InventoryProduct:
+      properties:
+        buffer_radius:
+          type: number
+        is_digital:
+          type: boolean
+        product_group:
+          $ref: '#/components/schemas/InventoryProductGroup'
+        product_group_id:
+          type: string
+        product_id:
+          type: string
+        product_name:
+          type: string
+        size:
+          type: string
+      required:
+        - buffer_radius
+        - size
+        - is_digital
+        - product_name
+        - product_id
+        - product_group_id
+        - product_group
+      type: object
+    InventoryProductGroup:
+      properties:
+        media_type:
+          $ref: '#/components/schemas/MediaType'
+      required:
+        - media_type
       type: object
     LocationData:
       properties:
@@ -1066,6 +2101,9 @@ components:
         longitude:
           format: decimal
           type: number
+        player_network:
+          format: boolean
+          type: boolean
       required:
         - commb_location_id
         - cma_ca
@@ -1073,6 +2111,7 @@ components:
         - csd
         - latitude
         - longitude
+        - player_network
       type: object
     LocationDto:
       properties:
@@ -1088,6 +2127,8 @@ components:
           type: string
         ca_cma_name:
           type: string
+        cmaCaByCmaCa:
+          $ref: '#/components/schemas/CmaCaByCmaCaDto'
         cma_ca:
           type: number
         cma_ca_id:
@@ -1097,15 +2138,21 @@ components:
           type: string
         commb_location_id:
           type: number
+        coordinates:
+          type: object
         created_at:
           type: string
         created_by:
           type: number
+        created_by_user:
+          $ref: '#/components/schemas/UserDto'
         cross_artery:
           maxLength: 150
           type: string
         csd:
           type: number
+        csdByCsd:
+          $ref: '#/components/schemas/CsdByCsdDto'
         csd_name:
           type: string
         csduid:
@@ -1120,6 +2167,8 @@ components:
           type: string
         geographic_code:
           type: number
+        inventories_aggregate:
+          $ref: '#/components/schemas/InventoriesAggregateObject'
         latitude:
           type: number
         location_name:
@@ -1130,6 +2179,8 @@ components:
         operator_id:
           description: Foreign key, associates to id from organizations
           type: number
+        player_network:
+          type: boolean
         primary_artery:
           maxLength: 150
           type: string
@@ -1152,8 +2203,15 @@ components:
         status:
           enum:
             - Active
+            - Estimate
             - Disabled
+            - Under Construction
+            - Deleted
           type: string
+        the_geom:
+          type: object
+        the_geom_webmercator:
+          type: object
         timezone_id:
           maxLength: 20
           type: string
@@ -1161,6 +2219,8 @@ components:
           type: string
         updated_by:
           type: number
+        updated_by_user:
+          $ref: '#/components/schemas/UserDto'
       required:
         - commb_location_id
         - external_location_numeric
@@ -1171,25 +2231,62 @@ components:
         - region
         - cma_ca
         - cma_ca_type
+        - cmaCaByCmaCa
+        - csdByCsd
         - geographic_code
         - csd
         - status
-        - created_by
         - csd_name
         - ca_cma_name
         - updated_at
         - created_at
         - cma_ca_id
         - csduid
+        - created_by_user
+        - updated_by_user
+        - player_network
       type: object
     LocationInventoryPoiFilters:
       properties:
         brand:
-          type: string
+          items:
+            type: string
+          type: array
         category:
-          type: string
+          items:
+            type: string
+          type: array
         distance:
           type: number
+        metadata_id:
+          type: number
+      type: object
+    MOPComparisonDto:
+      properties:
+        id:
+          type: string
+        index:
+          type: number
+        mop:
+          $ref: '#/components/schemas/MOPSelectionsDTO'
+        targets:
+          $ref: '#/components/schemas/MopQueryResponseDto'
+      required:
+        - id
+        - index
+      type: object
+    MOPExclusionDto:
+      properties:
+        market:
+          type: string
+        operator:
+          type: string
+        product:
+          $ref: '#/components/schemas/ExclusionProductDto'
+      required:
+        - market
+        - operator
+        - product
       type: object
     MOPSelection:
       properties:
@@ -1215,6 +2312,23 @@ components:
           items:
             $ref: '#/components/schemas/MOPSelection'
           type: array
+      type: object
+    MappingPlanDTO:
+      properties:
+        audience:
+          items:
+            type: string
+          type: array
+        faces:
+          items:
+            type: number
+          type: array
+        flighting:
+          type: boolean
+        targets:
+          $ref: '#/components/schemas/FaceQueryResponseDto'
+      required:
+        - targets
       type: object
     MarketDTO:
       properties:
@@ -1259,6 +2373,10 @@ components:
       type: object
     MarketsFilterResultsQueryResponse:
       properties:
+        available:
+          type: boolean
+        enabled:
+          type: boolean
         id:
           type: number
         market:
@@ -1269,6 +2387,18 @@ components:
         - market
         - province
         - id
+        - enabled
+        - available
+      type: object
+    MediaType:
+      properties:
+        media_type_id:
+          type: number
+        media_type_name:
+          type: string
+      required:
+        - media_type_name
+        - media_type_id
       type: object
     Mop:
       properties:
@@ -1294,6 +2424,10 @@ components:
       type: object
     MopQueryResultsDto:
       properties:
+        aims_circulations_total:
+          type: number
+        aims_impressions_total:
+          type: number
         circulations_total:
           type: number
         face_count:
@@ -1375,6 +2509,8 @@ components:
       properties:
         circulation:
           type: number
+        cost:
+          type: number
         face_count:
           type: number
         id:
@@ -1396,6 +2532,7 @@ components:
         - objectives
         - circulation
         - weeks
+        - cost
       type: object
     MopsAudienceProfileHTTPBody:
       properties:
@@ -1434,6 +2571,30 @@ components:
         - mop
         - targets
         - audience
+      type: object
+    MultiAudienceDto:
+      properties:
+        data:
+          $ref: '#/components/schemas/AudienceDTO'
+        id:
+          type: number
+        name:
+          type: string
+      required:
+        - id
+        - name
+        - data
+      type: object
+    NetworkData:
+      properties:
+        id:
+          format: int64
+          type: number
+        name:
+          type: string
+      required:
+        - id
+        - name
       type: object
     OOHProductDTO:
       properties:
@@ -1475,7 +2636,7 @@ components:
         type:
           type: string
         value:
-          type: number
+          type: object
       type: object
     OperatorResponse:
       properties:
@@ -1514,6 +2675,10 @@ components:
       type: object
     OrganizationFilterResultsQueryResponse:
       properties:
+        available:
+          type: boolean
+        enabled:
+          type: boolean
         id:
           type: number
         organization:
@@ -1521,6 +2686,8 @@ components:
       required:
         - organization
         - id
+        - available
+        - enabled
       type: object
     OrganizationUserDto:
       properties:
@@ -1538,8 +2705,41 @@ components:
         - last_name
         - email_address
       type: object
+    PaginateQueryDto:
+      properties:
+        TARGET:
+          type: string
+        limit:
+          type: number
+        offset:
+          type: number
+        order_by:
+          type: object
+        poi:
+          type: object
+        where:
+          type: object
+      type: object
+    PartnerCalculations:
+      properties:
+        calculation_data:
+          $ref: '#/components/schemas/CalculationData'
+        calculation_version:
+          type: string
+        commb_face_id:
+          type: number
+      required:
+        - commb_face_id
+        - calculation_version
+      type: object
     PartnerFaceData:
       properties:
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
         calculation_version:
           type: string
         commb_face_id:
@@ -1566,6 +2766,9 @@ components:
             - NW
             - NNW
           type: string
+        height:
+          format: int64
+          type: number
         illumination_from:
           format: int64
           type: number
@@ -1574,6 +2777,12 @@ components:
           type: number
         location:
           $ref: '#/components/schemas/LocationData'
+        network:
+          allOf:
+            - $ref: '#/components/schemas/NetworkData'
+          nullable: true
+        no_circulation:
+          type: boolean
         ooh_company_face_id:
           type: string
         status:
@@ -1581,9 +2790,14 @@ components:
             - Active
             - Disabled
           type: string
+        unit_of_measure:
+          type: string
         updated_at:
           format: date-time
           type: string
+        width:
+          format: int64
+          type: number
       required:
         - commb_face_id
         - facing_direction
@@ -1595,6 +2809,14 @@ components:
         - data_version
         - updated_at
         - location
+        - network
+        - width
+        - height
+        - unit_of_measure
+        - aims_circulation
+        - aims_ped_circulation
+        - aims_veh_circulation
+        - no_circulation
       type: object
     PartnerFaceId:
       properties:
@@ -1625,48 +2847,14 @@ components:
           $ref: '#/components/schemas/PlanDTO'
         plan_name:
           type: string
+        plan_type:
+          enum:
+            - MAPPING
+            - RF
+            - ALL_MOP
+            - ALL_FACES
+          type: string
         updated_at:
-          type: string
-        updated_by:
-          type: number
-      type: object
-    PatchInventoryDto:
-      properties:
-        commb_location_id:
-          type: number
-        external_face_numeric:
-          type: string
-        facing_direction:
-          type: string
-        illumination_from:
-          maximum: 24
-          minimum: 0
-          type: number
-        illumination_status:
-          type: string
-        illumination_to:
-          maximum: 24
-          minimum: 0
-          type: number
-        is_trio:
-          maximum: 1
-          minimum: 0
-          type: number
-        media_assets:
-          type: string
-        num_of_spots:
-          type: number
-        organizationId:
-          type: number
-        placing:
-          type: string
-        product_group_id:
-          type: number
-        product_id:
-          type: number
-        spot_time:
-          type: number
-        status:
           type: string
         updated_by:
           type: number
@@ -1722,6 +2910,8 @@ components:
           type: number
         is_digital:
           type: boolean
+        product_group:
+          $ref: '#/components/schemas/ProductProductGroup'
         product_group_id:
           type: number
         product_id:
@@ -1737,12 +2927,29 @@ components:
         updated_by:
           type: number
       type: object
+    PatchProductGroupDTO:
+      properties:
+        media_type_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+      type: object
     PatchSegmentDto:
       properties:
+        active:
+          type: boolean
         distance:
           type: number
         from_to_segments:
           type: string
+        is_digital_measurement:
+          type: boolean
         pct_traffic:
           type: number
         polyline:
@@ -1770,10 +2977,36 @@ components:
       properties:
         audience:
           $ref: '#/components/schemas/AudienceDTO'
+        audiences:
+          items:
+            $ref: '#/components/schemas/MultiAudienceDto'
+          type: array
+        compareMOP:
+          items:
+            $ref: '#/components/schemas/MOPComparisonDto'
+          type: array
+        context:
+          type: string
+        effectiveFrequency:
+          type: number
+        excludeFromReport:
+          $ref: '#/components/schemas/ExcludeFromReportDTO'
         flighting:
           type: boolean
+        isBasicAudience:
+          type: boolean
+        isQuickReport:
+          type: boolean
+        mappingPlan:
+          $ref: '#/components/schemas/MappingPlanDTO'
         mop:
           $ref: '#/components/schemas/MOPSelectionsDTO'
+        multilevel:
+          type: boolean
+        multipleAudience:
+          type: boolean
+        reportSortOrder:
+          type: object
         selectedAudienceId:
           type: number
         selectedAudienceName:
@@ -1783,13 +3016,19 @@ components:
       type: object
     PlanUser:
       properties:
+        email_address:
+          type: string
         first_name:
           type: string
+        id:
+          type: number
         last_name:
           type: string
       required:
+        - id
         - first_name
         - last_name
+        - email_address
       type: object
     PoiInput:
       properties:
@@ -1799,8 +3038,12 @@ components:
           type: array
         geometry:
           type: object
+        metadata_id:
+          type: number
         name:
-          type: string
+          items:
+            type: string
+          type: array
         sub_categories:
           items:
             type: string
@@ -1809,6 +3052,21 @@ components:
           items:
             type: number
           type: array
+      type: object
+    PoiMetadataDto:
+      properties:
+        poi_metadata_osm_pois_aggregate:
+          properties:
+            aggregate:
+              properties:
+                count:
+                  type: number
+              required:
+                - count
+              type: object
+          type: object
+      required:
+        - poi_metadata_osm_pois_aggregate
       type: object
     Point:
       properties:
@@ -1834,6 +3092,8 @@ components:
           type: number
         is_digital:
           type: boolean
+        product_group:
+          $ref: '#/components/schemas/ProductProductGroup'
         product_group_id:
           type: number
         product_id:
@@ -1855,15 +3115,75 @@ components:
         - buffer_radius
         - size
         - product_group_id
+        - product_group
         - is_digital
         - active
         - created_by
         - created_at
         - __typename
       type: object
+    ProductGroupDTO:
+      properties:
+        __typename:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+        created_by:
+          type: number
+        media_type_id:
+          type: number
+        product_group_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+      required:
+        - created_at
+        - created_by
+        - media_type_id
+        - product_group_id
+        - product_group_name
+        - product_group_name_fr
+        - updated_at
+        - updated_by
+        - active
+        - __typename
+      type: object
+    ProductProductGroup:
+      properties:
+        __typename:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+        created_by:
+          type: number
+        media_type_id:
+          type: number
+        product_group_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+      type: object
     ProductResponse:
       properties:
         circulation:
+          type: number
+        cost:
           type: number
         face_count:
           type: number
@@ -1873,10 +3193,30 @@ components:
           type: array
         id:
           type: number
+        max_daily_grps:
+          type: number
+        max_daily_impressions:
+          type: number
+        max_faces:
+          type: number
+        max_weekly_grps:
+          type: number
+        min_daily_grps:
+          type: number
+        min_daily_impressions:
+          type: number
+        min_faces:
+          type: number
+        min_weekly_grps:
+          type: number
         objectives:
           $ref: '#/components/schemas/ObjectivesResponse'
         product:
           type: string
+        spot_count:
+          type: number
+        spot_length:
+          type: number
         weeks:
           items:
             type: number
@@ -1889,11 +3229,15 @@ components:
       type: object
     ProductsFilterQueryResponse:
       properties:
+        available:
+          type: boolean
         category:
           enum:
             - DIGITAL
             - STATIC
           type: string
+        enabled:
+          type: boolean
         id:
           type: number
         product:
@@ -1902,6 +3246,52 @@ components:
         - category
         - product
         - id
+        - available
+        - enabled
+      type: object
+    ProximitySearch:
+      properties:
+        distance:
+          type: number
+        excludeWithin:
+          type: number
+        pois:
+          items:
+            $ref: '#/components/schemas/ProximitySearchPoi'
+          type: array
+      required:
+        - pois
+        - distance
+      type: object
+    ProximitySearchPoi:
+      properties:
+        coordinates:
+          items:
+            type: string
+          type: array
+        formattedAddress:
+          type: string
+        name:
+          type: string
+      required:
+        - coordinates
+      type: object
+    RemoveFileDto:
+      properties:
+        file:
+          format: binary
+          type: string
+        fileName:
+          description: File name
+          type: string
+      required:
+        - fileName
+      type: object
+    RemoveMediaDto:
+      properties:
+        locationFaceIndex:
+          description: Face index for location requests
+          type: number
       type: object
     RoleDTO:
       properties:
@@ -1990,6 +3380,8 @@ components:
           type: string
         from_to_segments:
           type: string
+        inventory:
+          $ref: '#/components/schemas/SegmentInventory'
         is_digital_measurement:
           type: boolean
         pct_traffic:
@@ -2017,17 +3409,113 @@ components:
         - from_segment_id
         - traffic_type
         - pct_traffic
-        - active
+        - inventory
+      type: object
+    SegmentInventory:
+      properties:
+        external_face_numeric:
+          type: string
+        product:
+          $ref: '#/components/schemas/SegmentProduct'
+      required:
+        - external_face_numeric
+        - product
+      type: object
+    SegmentProduct:
+      properties:
+        is_digital:
+          type: boolean
+      required:
+        - is_digital
+      type: object
+    ShareAccessByType:
+      properties:
+        email_address:
+          type: string
+        share_created_by:
+          type: number
+        share_id:
+          type: number
+        share_type:
+          enum:
+            - map_view
+            - rf_plan
+            - poi
+          type: string
+        user_id:
+          type: number
+      required:
+        - share_id
+        - share_type
+        - share_created_by
+        - user_id
+        - email_address
+      type: object
+    SpotImpressionCalculationParams:
+      properties:
+        spot_count:
+          type: number
+        spot_length:
+          type: number
+      required:
+        - spot_length
+        - spot_count
+      type: object
+    SpotImpressionRequestBody:
+      properties:
+        calculation_params:
+          $ref: '#/components/schemas/SpotImpressionCalculationParams'
+        query:
+          $ref: '#/components/schemas/PaginateQueryDto'
+      required:
+        - calculation_params
+        - query
       type: object
     StaticCirculationData:
       properties:
         circulation:
           $ref: '#/components/schemas/CirculationData'
+        circulations_pedestrian:
+          type: number
+        circulations_total:
+          type: number
+        circulations_vehicular:
+          type: number
       required:
         - circulation
       type: object
+    TaskAsset:
+      properties:
+        active:
+          type: boolean
+        file_name:
+          type: string
+        path:
+          type: string
+        size:
+          type: number
+      required:
+        - path
+        - size
+        - file_name
+        - active
+      type: object
+    TaskCreatedByUser:
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+      required:
+        - first_name
+        - last_name
+      type: object
     TaskDto:
       properties:
+        assets:
+          items:
+            $ref: '#/components/schemas/TaskAsset'
+          type: array
         created_at:
           type: string
         created_by:
@@ -2057,11 +3545,18 @@ components:
             - generic_request
             - update_face
             - update_location
+            - circulation_review
+            - estimate_review
+            - bulk_upload_request
           type: string
         updated_at:
           type: string
         updated_by:
           type: number
+        user:
+          $ref: '#/components/schemas/TaskCreatedByUser'
+        userByUpdatedBy:
+          $ref: '#/components/schemas/TaskCreatedByUser'
       required:
         - created_by
         - created_at
@@ -2082,15 +3577,208 @@ components:
         - id
         - name
       type: object
-    UpdateLocationDto:
+    TransferLocationDto:
       properties:
+        commbLocationIds:
+          items:
+            type: number
+          type: array
+        operatorId:
+          type: number
+      required:
+        - commbLocationIds
+        - operatorId
+      type: object
+    UpdateEnvironmentAccessBody:
+      properties:
+        environment_access:
+          items:
+            type: string
+          type: array
+      required:
+        - environment_access
+      type: object
+    UpdateFaceDto:
+      properties:
+        address:
+          type: string
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
+        audience_profile:
+          type: number
+        circ_type_1:
+          type: string
+        circ_type_1_aadt:
+          type: number
+        circ_type_1_flow:
+          type: number
+        circ_type_1_stn:
+          type: string
+        circ_type_2:
+          type: string
+        circ_type_2_aadt:
+          type: number
+        circ_type_2_flow:
+          type: number
+        circ_type_2_stn:
+          type: string
+        circ_type_3:
+          type: string
+        circ_type_3_aadt:
+          type: number
+        circ_type_3_flow:
+          type: number
+        circ_type_3_stn:
+          type: string
+        circ_type_p:
+          type: string
+        circ_type_p_aadt:
+          type: number
+        circ_type_p_flow:
+          type: number
+        circ_type_p_stn:
+          type: string
         commb_location_id:
           type: number
-        location:
-          $ref: '#/components/schemas/EditableLocationDto'
-      required:
-        - location
-        - commb_location_id
+        created_at:
+          type: string
+        created_by:
+          type: number
+        external_face_numeric:
+          type: string
+        facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
+        gender:
+          type: string
+        height:
+          type: number
+        illumination_from:
+          maximum: 24
+          minimum: 0
+          type: number
+        illumination_status:
+          enum:
+            - Lit
+            - Unlit
+            - Partial
+          type: string
+        illumination_to:
+          maximum: 24
+          minimum: 0
+          type: number
+        internal_facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
+        is_trio:
+          maximum: 1
+          minimum: 0
+          type: number
+        latitude:
+          type: number
+        locale:
+          type: string
+        locator:
+          type: string
+        longitude:
+          type: number
+        network_id:
+          type: number
+        no_circulation:
+          type: boolean
+        notes:
+          type: string
+        num_of_spots:
+          type: number
+        placing:
+          maxLength: 1
+          minLength: 1
+          type: string
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Review
+            - Under Construction
+            - Deleted
+          type: string
+        unit_of_measure:
+          type: string
+        updated_by:
+          type: number
+        width:
+          type: number
+      type: object
+    UpdateLocationDto:
+      properties:
+        description:
+          maxLength: 255
+          type: string
+        external_location_numeric:
+          maxLength: 20
+          type: string
+        faces:
+          items:
+            $ref: '#/components/schemas/CreateInventoryDto'
+          type: array
+        latitude:
+          type: number
+        location_name:
+          maxLength: 1000
+          type: string
+        longitude:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Construction
+            - Deleted
+          type: string
       type: object
     UpdateMarketDto:
       properties:
@@ -2104,6 +3792,13 @@ components:
       required:
         - market_name
         - status
+      type: object
+    UpdatePoiMetadataDto:
+      properties:
+        name:
+          type: string
+      required:
+        - name
       type: object
     UpdateProfileDto:
       properties:
@@ -2175,6 +3870,25 @@ components:
     UpdateViewManagerDto:
       properties: {}
       type: object
+    UploadFileDto:
+      properties:
+        file:
+          format: binary
+          type: string
+      required:
+        - file
+      type: object
+    UploadMediaDto:
+      properties:
+        file:
+          format: binary
+          type: string
+        locationFaceIndex:
+          description: Face index for location requests
+          type: number
+      required:
+        - file
+      type: object
     UserDto:
       properties:
         auth0_id:
@@ -2187,6 +3901,10 @@ components:
         email_address:
           maxLength: 50
           type: string
+        environment_access:
+          items:
+            type: string
+          type: array
         first_name:
           maxLength: 50
           type: string
@@ -2200,6 +3918,10 @@ components:
         organization:
           description: Foreign key, associates to id from organizations
           type: number
+        organizationByOrganization:
+          $ref: '#/components/schemas/UserOrganizationDto'
+        role:
+          $ref: '#/components/schemas/UserRoleDto'
         role_name:
           type: string
         status:
@@ -2245,6 +3967,37 @@ components:
         - status
         - created_at
       type: object
+    UserOrganizationDto:
+      properties:
+        name:
+          type: string
+      required:
+        - name
+      type: object
+    UserPreferences:
+      properties:
+        rf_report_language:
+          enum:
+            - fr
+            - en
+          type: string
+      type: object
+    UserRoleDto:
+      properties:
+        name:
+          type: string
+      required:
+        - name
+      type: object
+    ValidateAudienceHTTPBody:
+      properties:
+        rules:
+          allOf:
+            - $ref: '#/components/schemas/RuleModelDehydratedDto'
+          description: Rules from syncfusion/query builder
+      required:
+        - rules
+      type: object
     ViewManagerDto:
       properties:
         created_at:
@@ -2253,6 +4006,8 @@ components:
           type: number
         poi_data:
           type: object
+        proximity_search:
+          $ref: '#/components/schemas/ProximitySearch'
         status:
           enum:
             - Active
@@ -2304,6 +4059,16 @@ components:
         - all
       type: object
   securitySchemes:
+    auth0_jwk:
+      flows:
+        implicit:
+          authorizationUrl: ''
+          scopes:
+            all: all
+      type: oauth2
+      x-google-audiences: AUTH0_AUDIENCE
+      x-google-issuer: https://AUTH0_ACCOUNT_NAME.auth0.com/
+      x-google-jwks_uri: https://AUTH0_ACCOUNT_NAME.auth0.com/.well-known/jwks.json
     bearer:
       bearerFormat: JWT
       scheme: bearer
@@ -2315,6 +4080,1666 @@ info:
   version: '1.1'
 openapi: 3.0.0
 paths:
+  /Market:
+    post:
+      operationId: MarketController_createMarket
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMarketDto'
+        required: true
+      responses:
+        '201':
+          description: Market created successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '409':
+          description: Duplicate data
+      tags: &ref_19
+        - Market
+      x-google-backend: &ref_1
+        address: https://API_URL
+        deadline: 360
+        path_translation: APPEND_PATH_TO_ADDRESS
+  /Market/{id}:
+    delete:
+      operationId: MarketController_delete
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketDTO'
+          description: ''
+        '400':
+          description: Market Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_19
+      x-google-backend: *ref_1
+    put:
+      operationId: MarketController_update
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMarketDto'
+        required: true
+      responses:
+        '204':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarketDTO'
+          description: ''
+      tags: *ref_19
+      x-google-backend: *ref_1
+  /Market/{market_id}:
+    get:
+      operationId: MarketController_getMarketById
+      parameters:
+        - in: path
+          name: market_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The market has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_19
+      x-google-backend: *ref_1
+  /carto:
+    post:
+      operationId: CartoController_queryCartoData
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartoMapData'
+          description: ''
+      tags: &ref_25
+        - Carto
+      x-google-backend: *ref_1
+  /carto/circulation:
+    post:
+      operationId: CartoController_queryCirculation
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInputWithCirculationType'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /carto/credentials:
+    get:
+      operationId: CartoController_getToken
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /carto/face-level-rf-report:
+    post:
+      operationId: CartoController_getFaces
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                items:
+                  type: number
+                type: array
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /carto/inventory_calculations:
+    post:
+      operationId: CartoController_queryInventoryCalculations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /carto/marketshares:
+    post:
+      operationId: CartoController_queryMarketShares
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /carto/poi:
+    post:
+      operationId: CartoController_queryPoiData
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoiInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartoPoiData'
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /carto/reach:
+    post:
+      operationId: CartoController_queryCartoReach
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /carto/stats:
+    post:
+      operationId: CartoController_queryCartoStats
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FetchCartoDataInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_25
+      x-google-backend: *ref_1
+  /cmaCsd:
+    get:
+      operationId: CmaCsdController_getCmaCsd
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/CmaCsdDTO'
+                type: array
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_7
+        - cmaCsd
+      x-google-backend: *ref_1
+  /cmaCsd/{id}:
+    get:
+      operationId: CmaCsdController_getCmaById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+      tags: *ref_7
+      x-google-backend: *ref_1
+  /commb-snf/calculate_all_numbers:
+    put:
+      operationId: CommbSnfController_calculateAllNumbers
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+      tags: &ref_4
+        - CommbSnf
+      x-google-backend: *ref_1
+  /commb-snf/cdrReport:
+    get:
+      operationId: CommbSnfController_getCdrReport
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/face/export:
+    post:
+      operationId: CommbSnfController_getPartnerFaceExport
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaceExportRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/face/{id}/top-5-audiences:
+    get:
+      operationId: CommbSnfController_getTopFiveAudiences
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/faceReport/{id}:
+    get:
+      operationId: CommbSnfController_getFaceReport
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/run-calculations:
+    post:
+      operationId: CommbSnfController_runFaceCalculations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaceCalculationRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/spot-impressions:
+    post:
+      operationId: CommbSnfController_getPartnerSpotImpressions
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SpotImpressionRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/street-view-url:
+    post:
+      operationId: CommbSnfController_getStreetViewUrls
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GetStreetViewUrlRequestBody'
+        required: true
+      responses:
+        '200':
+          description: The request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/update-audience-profile:
+    put:
+      operationId: CommbSnfController_updateAudienceProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/update-inventory-rf-stats:
+    put:
+      operationId: CommbSnfController_updateInventoryRfStats
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /commb-snf/update-mop-aggregate:
+    put:
+      operationId: CommbSnfController_updateMOPAggregate
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_4
+      x-google-backend: *ref_1
+  /comment:
+    post:
+      operationId: CommentController_createComment
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+        required: true
+      responses:
+        '201':
+          description: Comment created successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_14
+        - Comments
+      x-google-backend: *ref_1
+  /comment/{comment_id}:
+    delete:
+      operationId: CommentController_deactivateComment
+      parameters:
+        - in: path
+          name: comment_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDto'
+          description: ''
+        '201':
+          description: Comment deleted successfully.
+        '400':
+          description: Role Id Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_14
+      x-google-backend: *ref_1
+  /comment/{task_id}:
+    get:
+      operationId: CommentController_getComments
+      parameters:
+        - in: path
+          name: task_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Comments has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_14
+      x-google-backend: *ref_1
+  /distinct-filters:
+    post:
+      operationId: DistinctFiltersController_getFilters
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DataManagerInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_20
+        - Filters
+      x-google-backend: *ref_1
+  /distinct-filters/poi:
+    get:
+      operationId: DistinctFiltersController_getPoiFilters
+      parameters:
+        - in: query
+          name: metadata_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_20
+      x-google-backend: *ref_1
+  /docma/allFacesAprfData:
+    get:
+      operationId: DocmaController_allFacesAprfData
+      parameters: []
+      responses:
+        '200':
+          description: The all faces audience profile request was processed successfully
+      tags: &ref_0
+        - Docma
+      x-google-backend: *ref_1
+  /docma/aprfReport/{id}:
+    get:
+      operationId: DocmaController_aprfReport
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The mops audience profile request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/aprfReportComparison/{id}:
+    get:
+      operationId: DocmaController_aprfReportComparison
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: >-
+            The mops audience profile request for comparison was processed
+            successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/aprfReportMultiTarget/{id}:
+    get:
+      operationId: DocmaController_aprfReportMultipleTarget
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: >-
+            The mops audience profile request for multiple targets was processed
+            successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/audienceProfile:
+    post:
+      operationId: DocmaController_audienceProfile
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudienceProfileHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/audienceProfileReachFrequency:
+    post:
+      operationId: DocmaController_audienceProfileReachFrequency
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudienceProfileReachFrequencyHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/facesAprfFlighting/{id}:
+    get:
+      operationId: DocmaController_facesAprfFlighting
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: >-
+            The faces flighting audience profile request was processed
+            successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/facesAprfFlightingMultipleTarget/{id}:
+    get:
+      operationId: DocmaController_facesAprfFlightingMultipleTarget
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: >-
+            The faces flighting audience profile request for multiple targets
+            was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/facesAprfReport/{id}:
+    get:
+      operationId: DocmaController_facesAprfReport
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The faces audience profile request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/facesAprfReportMultipleTarget/{id}:
+    get:
+      operationId: DocmaController_facesAprfReportMultipleTarget
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: >-
+            The faces audience profile request for multiple targets was
+            processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/inMarketSharesFaces:
+    get:
+      operationId: DocmaController_inMarketSharesFaces
+      parameters:
+        - in: query
+          name: market
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: company
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: faces
+          required: true
+          schema:
+            items:
+              type: number
+            type: array
+      responses:
+        '200':
+          description: The mops in market shares request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/inMarketSharesMop:
+    get:
+      operationId: DocmaController_inMarketSharesMop
+      parameters:
+        - in: query
+          name: market
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: company
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The mops in market shares request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/marketShareFaces:
+    get:
+      operationId: DocmaController_combinedMarketShareByFaces
+      parameters:
+        - in: query
+          name: faces
+          required: true
+          schema:
+            items:
+              type: number
+            type: array
+      responses:
+        '200':
+          description: The mops in market shares request was processed successfully
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/mopsAudienceProfile:
+    post:
+      operationId: DocmaController_mopsAudienceProfile
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MopsAudienceProfileHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The mops audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/mopsAudienceProfileReachFrequency:
+    post:
+      operationId: DocmaController_mopsAudienceProfileReachFrequency
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MopsAudienceProfileReachFrequencyHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: The mops audience profile request was processed successfully
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/validateAudience:
+    post:
+      operationId: DocmaController_validateAudience
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ValidateAudienceHTTPBody'
+        required: true
+      responses:
+        '200':
+          description: Validate that the audience is correctly built
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /docma/validateMops:
+    post:
+      operationId: DocmaController_validateMops
+      parameters: []
+      responses:
+        '200':
+          description: Get limits for MOP objectives
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /face:
+    get:
+      operationId: FaceController_getInventory
+      parameters:
+        - in: query
+          name: offset
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: TARGET
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '201':
+          description: The inventory has been added Successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: &ref_9
+        - Inventory
+      x-google-backend: *ref_1
+    post:
+      operationId: FaceController_addInventoryToLocation
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFaceDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/aimsdata/clear:
+    patch:
+      operationId: FaceController_clearAIMSdata
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFaceDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '201':
+          description: AIMS Circulation data has been cleared successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/aimsdata/update:
+    patch:
+      operationId: FaceController_updateAIMSdata
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginateQueryDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/audienceProfile:
+    patch:
+      operationId: FaceController_updateAudienceProfile
+      parameters: []
+      responses:
+        '200':
+          description: ''
+        '201':
+          description: The inventory audience profile has been updated Successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/calculations/{commb_face_id}:
+    get:
+      operationId: FaceController_getInventoryCalculations
+      parameters:
+        - in: path
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerCalculations'
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/commb_locations/{commb_location_id}:
+    get:
+      operationId: FaceController_getInventoriesByLocationId
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/InventoryEntity'
+                type: array
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/downloadPlaceBasedTemplate/{operator_id}:
+    get:
+      operationId: FaceController_downloadPlaceBasedTemplate
+      parameters:
+        - in: path
+          name: operator_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/exportface:
+    get:
+      operationId: FaceController_getExportFace
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportInventory'
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/mediaTypeAggregates:
+    post:
+      operationId: FaceController_getInventoryMediaTypeAggregates
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginateQueryDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/report:
+    get:
+      operationId: FaceController_getInventoriesReport
+      parameters:
+        - in: query
+          name: offset
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: number
+        - in: query
+          name: TARGET
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/report/{id}:
+    get:
+      operationId: FaceController_getInventoryReportByFaceId
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/reportExport:
+    post:
+      operationId: FaceController_exportInventoriesReport
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaceExportInput'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportInventory'
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/screen-impression-calculations:
+    post:
+      operationId: FaceController_getScreenImpressionCalculations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginateQueryDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/spot-impression-calculations:
+    post:
+      operationId: FaceController_getSpotImpressionCalculations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginateQueryDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/spot-impressions-for-organization:
+    post:
+      operationId: FaceController_getSpotImpressionsByOwner
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginateQueryDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/static-circ-calculations:
+    post:
+      operationId: FaceController_getStaticCircCalculations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaginateQueryDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/{id}:
+    delete:
+      operationId: FaceController_deleteInventory
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+    get:
+      operationId: FaceController_getInventoryById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+    patch:
+      operationId: FaceController_updateInventory
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFaceDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '201':
+          description: The inventory has been updated Successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/{id}/media:
+    post:
+      operationId: FaceController_uploadMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportFileDto'
+        description: Media Asset Upload
+        required: true
+      responses:
+        '201':
+          description: ''
+        '400':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /face/{id}/media/clear:
+    post:
+      operationId: FaceController_clearMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: ''
+      tags: *ref_9
+      x-google-backend: *ref_1
+  /graphql:
+    post:
+      operationId: GrqphQL_postendpoint
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        '200':
+          description: Content retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Error fetching data
+      tags:
+        - GraphQL
+      x-google-backend: *ref_1
+  /locations:
+    get:
+      operationId: LocationController_getLocations
+      parameters: []
+      responses:
+        '200':
+          description: The locations list has been retrieved successfully.
+      tags: &ref_8
+        - Locations
+      x-google-backend: *ref_1
+    post:
+      operationId: LocationController_createLocation
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLocationDto'
+        required: true
+      responses:
+        '201':
+          description: The location has been successfully created.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /locations/bulk-update:
+    patch:
+      operationId: LocationController_patchBulkUpdate
+      parameters:
+        - in: query
+          name: type
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportFileDto'
+        description: Bulk update for the inventories
+        required: true
+      responses:
+        '200':
+          description: ''
+        '201':
+          description: Inventories were successfully updated.
+        '400':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /locations/market_details:
+    get:
+      operationId: LocationController_getCsdCMACA
+      parameters:
+        - in: query
+          name: latitude
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: longitude
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The market data has been retrieved successfully.
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /locations/transfer:
+    patch:
+      operationId: LocationController_transferLocations
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferLocationDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/LocationDto'
+                type: array
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /locations/{commb_location_id}:
+    get:
+      operationId: LocationController_getLocationById
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The location has been retrieved successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+    patch:
+      operationId: LocationController_updateLocation
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLocationDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationDto'
+          description: ''
+        '201':
+          description: The location has been updated successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+        '409':
+          description: Location already exist with the provided commb location id
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /locations/{commb_location_id}/{status}:
+    patch:
+      operationId: LocationController_updateLocationStatus
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: status
+          required: true
+          schema:
+            enum:
+              - Active
+              - Estimate
+              - Disabled
+              - Under Construction
+              - Deleted
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationDto'
+          description: ''
+        '201':
+          description: The location status has been updated successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_8
+      x-google-backend: *ref_1
+  /media-type:
+    get:
+      operationId: MediaTypeController_getMediaTypes
+      parameters: []
+      responses:
+        '200':
+          description: The media types has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags:
+        - Media-Type
+      x-google-backend: *ref_1
   /ooh-product:
     get:
       operationId: OOHProductController_getOOHProducts
@@ -2332,12 +5757,9 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
+      tags: &ref_23
         - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: OOHProductController_createOOHProduct
       parameters: []
@@ -2356,12 +5778,8 @@ paths:
           description: Forbidden.
         '500':
           description: Internal Server Exception
-      tags:
-        - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_23
+      x-google-backend: *ref_1
   /ooh-product/{id}:
     delete:
       operationId: OOHProductController_deleteOOHProduct
@@ -2380,12 +5798,8 @@ paths:
           description: Forbidden.
         '500':
           description: Internal Server Exception
-      tags:
-        - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_23
+      x-google-backend: *ref_1
     patch:
       operationId: OOHProductController_updateOOHProduct
       parameters:
@@ -2409,12 +5823,253 @@ paths:
           description: Forbidden.
         '500':
           description: Internal Server Exception
+      tags: *ref_23
+      x-google-backend: *ref_1
+  /organizations:
+    get:
+      operationId: OrganizationController_getOrganizations
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrganizationDto'
+                type: array
+          description: ''
+      tags: &ref_10
+        - Organizations
+      x-google-backend: *ref_1
+    post:
+      operationId: OrganizationController_addOrganization
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrganizationDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDto'
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_10
+      x-google-backend: *ref_1
+  /organizations/{id}:
+    delete:
+      operationId: OrganizationController_deleteOrganization
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrganizationUserDto'
+                type: array
+          description: Cannot delete organization with existing user(s)
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_10
+      x-google-backend: *ref_1
+    get:
+      operationId: OrganizationController_getOrganizationById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationDto'
+          description: ''
+      tags: *ref_10
+      x-google-backend: *ref_1
+    patch:
+      operationId: OrganizationController_updateOrganization
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchOrganizationDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_10
+      x-google-backend: *ref_1
+  /organizations/{id}/{status}:
+    patch:
+      operationId: OrganizationController_toggleOrganizationStatus
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: status
+          required: true
+          schema:
+            enum:
+              - Active
+              - Disabled
+            type: string
+      responses:
+        '200':
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+        '404':
+          description: ''
+      tags: *ref_10
+      x-google-backend: *ref_1
+  /partner/alfa-1-5/facedata/byId:
+    get:
+      operationId: AlphaCirculationController_getCirculationsRaw
+      parameters:
+        - example: 2938
+          in: query
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationData'
+          description: The circulation data has been retrieved successfully.
+      tags: &ref_17
+        - Partner
+      x-google-backend: *ref_1
+  /partner/alfa-1-5/faces/byDate:
+    get:
+      operationId: AlphaCirculationController_getPartnerInventoryByDate
+      parameters:
+        - example: '2021-12-24T13:45:00Z'
+          in: query
+          name: updated_after
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PartnerFaceData'
+                type: array
+          description: The face list has been retrieved successfully.
+      tags: *ref_17
+      x-google-backend: *ref_1
+  /partner/alfa-1-5/faces/byId:
+    get:
+      operationId: AlphaCirculationController_getPartnerInventoryByIds
+      parameters:
+        - example: 2938
+          explode: false
+          in: query
+          name: commb_face_id
+          required: true
+          schema:
+            items:
+              type: number
+            type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PartnerFaceData'
+                type: array
+          description: The face list has been retrieved successfully.
+      tags: *ref_17
+      x-google-backend: *ref_1
+  /partner/alfa-1-5/faces/idsByDate:
+    get:
+      operationId: AlphaCirculationController_getPartnerInventoryIdsByDate
+      parameters:
+        - example: '2021-12-24T13:45:00Z'
+          in: query
+          name: updated_after
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PartnerFaceId'
+                type: array
+          description: The face list has been retrieved successfully.
+      tags: *ref_17
+      x-google-backend: *ref_1
+  /partner/api/player-network-calculation/{id}:
+    get:
+      operationId: PartnerController_getPlayerNetworkCalculation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationData'
+          description: The player network circulation has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
       tags:
-        - OOHProduct
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+        - Partner
+      x-google-backend: *ref_1
   /partner/facedata/byId:
     get:
       operationId: CirculationController_getCirculations
@@ -2430,16 +6085,11 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/CalculationData'
-                type: array
+                $ref: '#/components/schemas/CalculationData'
           description: The circulation data has been retrieved successfully.
       tags:
         - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /partner/faces/byDate:
     get:
       operationId: PartnerFacesController_getPartnerInventoryByDate
@@ -2459,12 +6109,9 @@ paths:
                   $ref: '#/components/schemas/PartnerFaceData'
                 type: array
           description: The face list has been retrieved successfully.
-      tags:
+      tags: &ref_16
         - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /partner/faces/byId:
     get:
       operationId: PartnerFacesController_getPartnerInventoryByIds
@@ -2487,12 +6134,8 @@ paths:
                   $ref: '#/components/schemas/PartnerFaceData'
                 type: array
           description: The face list has been retrieved successfully.
-      tags:
-        - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_16
+      x-google-backend: *ref_1
   /partner/faces/idsByDate:
     get:
       operationId: PartnerFacesController_getPartnerInventoryIdsByDate
@@ -2512,12 +6155,75 @@ paths:
                   $ref: '#/components/schemas/PartnerFaceId'
                 type: array
           description: The face list has been retrieved successfully.
-      tags:
-        - Partner
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_16
+      x-google-backend: *ref_1
+  /poi/metadata:
+    get:
+      operationId: PoiController_getPoiMetadatas
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PoiMetadataDto'
+                type: array
+          description: ''
+      tags: &ref_15
+        - POI
+      x-google-backend: *ref_1
+    post:
+      operationId: PoiController_createPoiMetadata
+      parameters: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreatePoiMetadataDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoiMetadataDto'
+          description: ''
+      tags: *ref_15
+      x-google-backend: *ref_1
+  /poi/metadata/{id}:
+    delete:
+      operationId: PoiController_deletePoiMetadata
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+      x-google-backend: *ref_1
+    patch:
+      operationId: PoiController_updatePoiMetadata
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePoiMetadataDto'
+        required: true
+      responses:
+        '200':
+          description: ''
+      tags: *ref_15
+      x-google-backend: *ref_1
   /product:
     get:
       operationId: ProductController_getProducts
@@ -2535,12 +6241,159 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
+      tags: &ref_3
         - Product
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
+    post:
+      operationId: ProductController_createProduct
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductDTO'
+        required: true
+      responses:
+        '201':
+          description: The product was created Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_3
+      x-google-backend: *ref_1
+  /product-group:
+    get:
+      operationId: ProductGroupController_getProductGroups
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ProductGroupDTO'
+                type: array
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_13
+        - ProductGroup
+      x-google-backend: *ref_1
+    post:
+      operationId: ProductGroupController_createProductGroup
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductGroupDTO'
+        required: true
+      responses:
+        '201':
+          description: The product group was created Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_13
+      x-google-backend: *ref_1
+  /product-group/{id}:
+    delete:
+      operationId: ProductGroupController_deleteProductGroup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The product group was deleted Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_13
+      x-google-backend: *ref_1
+    patch:
+      operationId: ProductGroupController_updateProductGroup
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchProductGroupDTO'
+        required: true
+      responses:
+        '200':
+          description: The product group was updated Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_13
+      x-google-backend: *ref_1
+  /product/{id}:
+    delete:
+      operationId: ProductController_deleteProduct
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The product was deleted Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_3
+      x-google-backend: *ref_1
+    patch:
+      operationId: ProductController_updateProduct
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchProductDTO'
+        required: true
+      responses:
+        '200':
+          description: The product was updated Successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags: *ref_3
+      x-google-backend: *ref_1
   /profile:
     get:
       operationId: ProfileController_getProfile
@@ -2552,12 +6405,9 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
+      tags: &ref_6
         - Profile
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     put:
       operationId: ProfileController_UpdateProfile
       parameters: []
@@ -2580,12 +6430,55 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - Profile
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_6
+      x-google-backend: *ref_1
+  /profile/preferences:
+    get:
+      operationId: ProfileController_getPreferences
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPreferences'
+          description: ''
+      tags: *ref_6
+      x-google-backend: *ref_1
+    put:
+      operationId: ProfileController_updatePreferences
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserPreferences'
+        required: true
+      responses:
+        '200':
+          description: ''
+      tags: *ref_6
+      x-google-backend: *ref_1
+  /rf-tool:
+    post:
+      operationId: RFToolController_createPlan
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCampaignPlanDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CampaignPlanDto'
+          description: ''
+      tags: &ref_2
+        - RFTool
+      x-google-backend: *ref_1
   /rf-tool/audience/{id}:
     delete:
       operationId: RFToolController_delete
@@ -2606,12 +6499,8 @@ paths:
           description: Audience Not Found.
         '403':
           description: Forbidden.
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
     get:
       operationId: RFToolController_getAudienceById
       parameters:
@@ -2629,12 +6518,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
     patch:
       operationId: RFToolController_patchAudience
       parameters:
@@ -2658,12 +6543,8 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/audiences:
     post:
       operationId: RFToolController_postAudience
@@ -2681,19 +6562,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/CampaignPlanDto'
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/audiences/list:
     get:
       operationId: RFToolController_getAudience
       parameters:
         - in: query
           name: offset
-          required: true
+          required: false
           schema:
             type: number
         - in: query
@@ -2701,6 +6578,11 @@ paths:
           required: false
           schema:
             type: number
+        - in: query
+          name: TARGET
+          required: false
+          schema:
+            type: string
       responses:
         '200':
           description: ''
@@ -2708,12 +6590,17 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
+  /rf-tool/export/reference-data:
+    get:
+      operationId: RFToolController_getReferenceDataExportUrl
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/mop/filters:
     get:
       operationId: RFToolController_getFilters
@@ -2748,12 +6635,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/results/mop-for-campaign/{id}:
     get:
       operationId: RFToolController_getMOPQueryResults
@@ -2772,12 +6655,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/{campaignId}/audience/{audienceId}:
     post:
       operationId: RFToolController_addAudienceToCampaign
@@ -2803,12 +6682,8 @@ paths:
           description: ''
         '404':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
   /rf-tool/{id}:
     delete:
       operationId: RFToolController_deleteCampaignPlan
@@ -2829,12 +6704,8 @@ paths:
           description: Campaign Plan Not Found.
         '403':
           description: Forbidden.
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
     get:
       operationId: RFToolController_getPlanById
       parameters:
@@ -2852,12 +6723,8 @@ paths:
           description: ''
         '403':
           description: ''
-      tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_2
+      x-google-backend: *ref_1
     patch:
       operationId: RFToolController_patchCampaignPlan
       parameters:
@@ -2881,12 +6748,326 @@ paths:
           description: ''
         '404':
           description: ''
+      tags: *ref_2
+      x-google-backend: *ref_1
+  /roles:
+    get:
+      operationId: RoleController_getRoles
+      parameters: []
+      responses:
+        '200':
+          description: The roles list has been retrieved successfully.
+      tags: &ref_12
+        - Roles
+      x-google-backend: *ref_1
+    post:
+      operationId: RoleController_createRole
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoleDTO'
+        required: true
+      responses:
+        '201':
+          description: The role has been successfully created.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_12
+      x-google-backend: *ref_1
+  /roles/{id}:
+    delete:
+      operationId: RoleController_deleteRole
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDTO'
+          description: ''
+        '400':
+          description: Role Id Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_12
+      x-google-backend: *ref_1
+    get:
+      operationId: RoleController_getRoleById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDTO'
+          description: ''
+      tags: *ref_12
+      x-google-backend: *ref_1
+    put:
+      operationId: RoleController_updateRole
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRoleDTO'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoleDTO'
+          description: ''
+        '201':
+          description: The role has been updated successfully.
+        '400':
+          description: Role Id Not Found.
+        '403':
+          description: Forbidden.
+      tags: *ref_12
+      x-google-backend: *ref_1
+  /segment-assignment/{commb_face_id}:
+    get:
+      operationId: SegmentAssignmentController_getSegmentsByInventoryId
+      parameters:
+        - in: path
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ApplicableSegmentDto'
+                type: array
+          description: ''
       tags:
-        - RFTool
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+        - SegmentAssignments
+      x-google-backend: *ref_1
+  /segments:
+    get:
+      operationId: SegmentController_findAll
+      parameters:
+        - in: query
+          name: commb_face_ids
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: &ref_18
+        - Segments
+      x-google-backend: *ref_1
+    patch:
+      operationId: SegmentController_patch
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchSegmentInput'
+        required: true
+      responses:
+        '200':
+          description: ''
+      tags: *ref_18
+      x-google-backend: *ref_1
+    post:
+      operationId: SegmentController_create
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSegmentDto'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SegmentDto'
+          description: ''
+      tags: *ref_18
+      x-google-backend: *ref_1
+  /segments/batch:
+    post:
+      operationId: SegmentController_bulkCreate
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: *ref_18
+      x-google-backend: *ref_1
+  /segments/by-composite-keys:
+    get:
+      operationId: SegmentController_find
+      parameters:
+        - in: query
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+        - in: query
+          name: from_segment_id
+          required: true
+          schema:
+            maxLength: 20
+            type: string
+        - in: query
+          name: to_segment_id
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: is_digital_measurement
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: *ref_18
+      x-google-backend: *ref_1
+  /segments/details:
+    get:
+      operationId: SegmentController_segmentDetails
+      parameters:
+        - in: query
+          name: commb_face_ids
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: *ref_18
+      x-google-backend: *ref_1
+  /segments/{commb_face_id}:
+    get:
+      operationId: SegmentController_getSegmentsByFaceId
+      parameters:
+        - in: path
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SegmentDto'
+                type: array
+          description: ''
+      tags: *ref_18
+      x-google-backend: *ref_1
+  /share-access:
+    post:
+      operationId: ShareAccessController_addUsersByEmail
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailShareInput'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: &ref_24
+        - ShareAccess
+      x-google-backend: *ref_1
+  /share-access/disable:
+    put:
+      operationId: ShareAccessController_disableShareAccessRow
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DisableAccessInput'
+        required: true
+      responses:
+        '200':
+          description: ''
+      tags: *ref_24
+      x-google-backend: *ref_1
+  /share-access/{share_type}:
+    get:
+      operationId: ShareAccessController_getShareAccessByType
+      parameters:
+        - in: path
+          name: share_type
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ShareAccessByType'
+                type: array
+          description: ''
+      tags: *ref_24
+      x-google-backend: *ref_1
   /task-histories/{task_id}:
     get:
       operationId: TaskHistoryController_findOne
@@ -2910,10 +7091,7 @@ paths:
           description: ''
       tags:
         - TaskHistories
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /tasks:
     get:
       operationId: TaskController_findAll
@@ -2934,12 +7112,9 @@ paths:
                   $ref: '#/components/schemas/TaskDto'
                 type: array
           description: ''
-      tags:
+      tags: &ref_11
         - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: TaskController_create
       parameters: []
@@ -2956,12 +7131,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TaskDto'
           description: ''
-      tags:
-        - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_11
+      x-google-backend: *ref_1
   /tasks/{id}:
     get:
       operationId: TaskController_findOne
@@ -2978,12 +7149,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TaskDto'
           description: ''
-      tags:
-        - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_11
+      x-google-backend: *ref_1
     patch:
       operationId: TaskController_update
       parameters:
@@ -3001,12 +7168,95 @@ paths:
       responses:
         '204':
           description: ''
-      tags:
-        - Tasks
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_11
+      x-google-backend: *ref_1
+  /tasks/{id}/file:
+    post:
+      operationId: TaskController_updateTaskAssets
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadFileDto'
+        description: File Upload
+        required: true
+      responses:
+        '201':
+          description: ''
+        '400':
+          description: Bad Request.
+      tags: *ref_11
+      x-google-backend: *ref_1
+  /tasks/{id}/media:
+    post:
+      operationId: TaskController_updateTaskMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadMediaDto'
+        description: Media Asset Upload
+        required: true
+      responses:
+        '201':
+          description: ''
+        '400':
+          description: Bad Request.
+      tags: *ref_11
+      x-google-backend: *ref_1
+  /tasks/{id}/removeFile:
+    post:
+      operationId: TaskController_removeTaskAsset
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RemoveFileDto'
+        description: Remove File
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_11
+      x-google-backend: *ref_1
+  /tasks/{id}/removeMedia:
+    post:
+      operationId: TaskController_removeTaskMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RemoveMediaDto'
+        required: true
+      responses:
+        '201':
+          description: ''
+      tags: *ref_11
+      x-google-backend: *ref_1
   /usermarketaccesses:
     post:
       operationId: UserMarketAccessController_create
@@ -3024,12 +7274,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserMarketAccessDTO'
           description: ''
-      tags:
+      tags: &ref_22
         - UserMarketAccesses
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
   /usermarketaccesses/{id}:
     delete:
       operationId: UserMarketAccessController_delete
@@ -3050,12 +7297,8 @@ paths:
           description: User Market Access Not Found.
         '403':
           description: Forbidden.
-      tags:
-        - UserMarketAccesses
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_22
+      x-google-backend: *ref_1
     put:
       operationId: UserMarketAccessController_update
       parameters:
@@ -3077,12 +7320,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserMarketAccessDTO'
           description: ''
-      tags:
-        - UserMarketAccesses
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_22
+      x-google-backend: *ref_1
   /users:
     get:
       operationId: UserController_getUsers
@@ -3090,12 +7329,9 @@ paths:
       responses:
         '200':
           description: The users list has been retrieved successfully.
-      tags:
+      tags: &ref_5
         - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: UserController_createUser
       parameters: []
@@ -3116,12 +7352,8 @@ paths:
           description: User already exist with the provided email address
         '500':
           description: Error creating user on Auth0
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_5
+      x-google-backend: *ref_1
     put:
       operationId: UserController_updateUser
       parameters: []
@@ -3146,12 +7378,26 @@ paths:
           description: Forbidden.
         '409':
           description: User already exist with the provided email address
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_5
+      x-google-backend: *ref_1
+  /users/reset-password/{id}:
+    post:
+      operationId: UserController_resetPassword
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: The user's password has been successfully reset.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_5
+      x-google-backend: *ref_1
   /users/{id}:
     get:
       operationId: UserController_getUserById
@@ -3168,12 +7414,38 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_5
+      x-google-backend: *ref_1
+  /users/{id}/environment_access:
+    patch:
+      operationId: UserController_updateUserEnvironmentAccess
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateEnvironmentAccessBody'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserDto'
+          description: ''
+        '201':
+          description: The user environment_access has been updated successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: *ref_5
+      x-google-backend: *ref_1
   /users/{id}/{status}:
     patch:
       operationId: UserController_updateUserStatus
@@ -3204,12 +7476,8 @@ paths:
           description: Bad Request.
         '403':
           description: Forbidden.
-      tags:
-        - Users
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_5
+      x-google-backend: *ref_1
   /viewmanagers:
     get:
       operationId: ViewManagerController_findAllByUser
@@ -3223,12 +7491,9 @@ paths:
                   $ref: '#/components/schemas/GetViewManagerDto'
                 type: array
           description: ''
-      tags:
+      tags: &ref_21
         - ViewManagers
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      x-google-backend: *ref_1
     post:
       operationId: ViewManagerController_create
       parameters: []
@@ -3245,12 +7510,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/ViewManagerDto'
           description: ''
-      tags:
-        - ViewManagers
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_21
+      x-google-backend: *ref_1
+  /viewmanagers/all:
+    get:
+      operationId: ViewManagerController_findAll
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/GetViewManagerDto'
+                type: array
+          description: ''
+      tags: *ref_21
+      x-google-backend: *ref_1
   /viewmanagers/{id}:
     put:
       operationId: ViewManagerController_update
@@ -3273,19 +7549,10 @@ paths:
               schema:
                 $ref: '#/components/schemas/ViewManagerDto'
           description: ''
-      tags:
-        - ViewManagers
-      x-google-backend:
-        address: https://API_URL
-        deadline: 360
-        path_translation: APPEND_PATH_TO_ADDRESS
+      tags: *ref_21
+      x-google-backend: *ref_1
 security:
+  - auth0_jwk: []
   - bearer: []
-servers:
-  - url: https://dev.roadmap.commb.ca/services
-    description: Development
-  - url: https://staging.roadmap.commb.ca/services
-    description: Staging
-  - url: https://prod.roadmap.commb.ca/services
-    description: Production
+servers: []
 tags: []
