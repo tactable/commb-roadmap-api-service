@@ -1,0 +1,510 @@
+components:
+  schemas:
+    CalculationData:
+      properties:
+        calculation_time:
+          type: string
+        calculation_version:
+          type: string
+        commb_face_id:
+          type: number
+        data_version:
+          type: string
+        digital:
+          $ref: '#/components/schemas/DigitalImpressionsData'
+        in_market_percentage:
+          type: number
+        static:
+          $ref: '#/components/schemas/StaticCirculationData'
+      required:
+        - calculation_version
+        - commb_face_id
+      type: object
+    CirculationData:
+      properties:
+        pct_pedestrian:
+          $ref: '#/components/schemas/WeeklyImpression'
+        pedestrian:
+          $ref: '#/components/schemas/WeeklyImpression'
+        total:
+          $ref: '#/components/schemas/WeeklyImpression'
+        vehicular:
+          $ref: '#/components/schemas/WeeklyImpression'
+      type: object
+    DigitalCirculationData:
+      properties:
+        pedestrian:
+          $ref: '#/components/schemas/WeeklyImpression'
+        total:
+          $ref: '#/components/schemas/WeeklyImpression'
+        vehicular:
+          $ref: '#/components/schemas/WeeklyImpression'
+      type: object
+    DigitalDirData:
+      properties:
+        pedestrian:
+          $ref: '#/components/schemas/WeeklyImpression'
+        vehicular:
+          $ref: '#/components/schemas/WeeklyImpression'
+      type: object
+    DigitalDwellTimeData:
+      properties:
+        pedestrian:
+          type: number
+        vehicular:
+          $ref: '#/components/schemas/WeeklyImpression'
+        consolidated:
+          $ref: '#/components/schemas/WeeklyImpression'
+      type: object
+    DigitalSpotExposuresData:
+      properties:
+        pedestrian:
+          $ref: '#/components/schemas/WeeklyImpression'
+        total:
+          $ref: '#/components/schemas/WeeklyImpression'
+        vehicular:
+          $ref: '#/components/schemas/WeeklyImpression'
+      type: object
+    DailyImpression:
+      properties:
+        all:
+          type: number
+        dp_01:
+          type: number
+        dp_02:
+          type: number
+        dp_03:
+          type: number
+        dp_04:
+          type: number
+        dp_05:
+          type: number
+        hr_00:
+          type: number
+        hr_01:
+          type: number
+        hr_02:
+          type: number
+        hr_03:
+          type: number
+        hr_04:
+          type: number
+        hr_05:
+          type: number
+        hr_06:
+          type: number
+        hr_07:
+          type: number
+        hr_08:
+          type: number
+        hr_09:
+          type: number
+        hr_10:
+          type: number
+        hr_11:
+          type: number
+        hr_12:
+          type: number
+        hr_13:
+          type: number
+        hr_14:
+          type: number
+        hr_15:
+          type: number
+        hr_16:
+          type: number
+        hr_17:
+          type: number
+        hr_18:
+          type: number
+        hr_19:
+          type: number
+        hr_20:
+          type: number
+        hr_21:
+          type: number
+        hr_22:
+          type: number
+        hr_23:
+          type: number
+      required:
+        - all
+        - hr_00
+        - hr_01
+        - hr_02
+        - hr_03
+        - hr_04
+        - hr_05
+        - hr_06
+        - hr_07
+        - hr_08
+        - hr_09
+        - hr_10
+        - hr_11
+        - hr_12
+        - hr_13
+        - hr_14
+        - hr_15
+        - hr_16
+        - hr_17
+        - hr_18
+        - hr_19
+        - hr_20
+        - hr_21
+        - hr_22
+        - hr_23
+        - dp_01
+        - dp_02
+        - dp_03
+        - dp_04
+        - dp_05
+      type: object
+    DigitalImpressionsData:
+      properties:
+        dir:
+          $ref: '#/components/schemas/DigitalDirData'
+        dwell_time:
+          $ref: '#/components/schemas/DigitalDwellTimeData'
+        screen_impressions:
+          $ref: '#/components/schemas/CirculationData'
+        spot_ad_play_impressions:
+          $ref: '#/components/schemas/CirculationData'
+        spot_exposures:
+          $ref: '#/components/schemas/DigitalSpotExposuresData'
+        circulation:
+          $ref: '#/components/schemas/DigitalCirculationData'
+        screen_impressions_pedestrian:
+          type: number
+        screen_impressions_total:
+          type: number
+        screen_impressions_vehicular:
+          type: number
+        spot_ad_play_pedestrian:
+          type: number
+        spot_ad_play_total:
+          type: number
+        spot_ad_play_vehicular:
+         type: number
+      required:
+        - dir
+        - dwell_time
+        - screen_impressions
+        - spot_ad_play_impressions
+      type: object
+    NetworkData:
+      properties:
+        id:
+          format: int64
+          type: number
+        name:
+          type: string
+      required:
+        - id
+        - name
+      type: object
+    LocationData:
+      properties:
+        commb_location_id:
+          format: int64
+          type: number
+        cma_ca:
+          format: int64
+          type: number
+        cma_ca_type:
+          type: string
+        csd:
+          format: int64
+          type: number
+        latitude:
+          format: decimal
+          type: number
+        longitude:
+          format: decimal
+          type: number
+        player_network:
+          format: boolean
+          type: boolean
+        updated_at:
+          format: date-time
+          type: string
+      required:
+        - organization_id
+        - commb_location_id
+        - cma_ca
+        - cma_ca_type
+        - csd
+        - latitude
+        - longitude
+        - player_network
+      type: object
+    PartnerFaceData:
+      properties:
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
+        calculation_version:
+          type: string
+        commb_face_id:
+          format: int64
+          type: number
+        data_version:
+          type: string
+        facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - NWN
+            - NW
+            - NNW
+          type: string
+        illumination_from:
+          format: int64
+          type: number
+        illumination_to:
+          format: int64
+          type: number
+        location:
+          $ref: '#/components/schemas/LocationData'
+        network:
+          allOf:
+            - $ref: '#/components/schemas/NetworkData'
+          nullable: true
+        no_circulation:
+          type: boolean
+        ooh_company_face_id:
+          type: string
+        status:
+          enum:
+            - Active
+            - Disabled
+          type: string
+        updated_at:
+          format: date-time
+          type: string
+        width:
+          format: int64
+          type: number
+        height:
+          format: int64
+          type: number
+        unit_of_measure:
+          type: string
+      required:
+        - commb_face_id
+        - facing_direction
+        - status
+        - illumination_from
+        - illumination_to
+        - ooh_company_face_id
+        - calculation_version
+        - data_version
+        - updated_at
+        - location
+        - network
+        - width
+        - height
+        - unit_of_measure
+        - aims_circulation
+        - aims_ped_circulation
+        - aims_veh_circulation
+      type: object
+    PartnerFaceId:
+      properties:
+        commb_face_id:
+          format: int64
+          type: number
+      required:
+        - commb_face_id
+      type: object
+    StaticCirculationData:
+      properties:
+        circulation:
+          $ref: '#/components/schemas/CirculationData'
+        circulations_pedestrian:
+          type: number
+        circulations_total:
+          type: number
+        circulations_vehicular:
+          type: number
+      required:
+        - circulation
+      type: object
+    WeeklyImpression:
+      properties:
+        all:
+          $ref: '#/components/schemas/DailyImpression'
+        fr:
+          $ref: '#/components/schemas/DailyImpression'
+        mo:
+          $ref: '#/components/schemas/DailyImpression'
+        sa:
+          $ref: '#/components/schemas/DailyImpression'
+        su:
+          $ref: '#/components/schemas/DailyImpression'
+        th:
+          $ref: '#/components/schemas/DailyImpression'
+        tu:
+          $ref: '#/components/schemas/DailyImpression'
+        wd:
+          $ref: '#/components/schemas/DailyImpression'
+      required:
+        - fr
+        - mo
+        - sa
+        - su
+        - th
+        - tu
+        - wd
+        - all
+      type: object
+  securitySchemes:
+    bearer:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+info:
+  contact: {}
+  description: 2024-04-17 - APIs used to programatically access circulation and impression data from Roadmap.
+  title: Roadmap Partner API
+  version: 'beta-0.5'
+openapi: 3.0.0
+paths:
+  /partner/api/player-network-calculation/{id}:
+    get:
+      operationId: PartnerController_getPlayerNetworkCalculation
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationData'
+          description: The player network circulation has been retrieved successfully.
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+        '500':
+          description: Internal Server Exception
+      tags:
+        - Partner
+      x-google-backend: &ref_1
+        address: https://API_URL
+        deadline: 360
+        path_translation: APPEND_PATH_TO_ADDRESS
+  /partner/facedata/byId:
+    get:
+      operationId: CirculationController_getCirculations
+      parameters:
+        - example: 2938
+          in: query
+          name: commb_face_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalculationData'
+          description: The circulation data has been retrieved successfully.
+      tags:
+        - Partner
+      x-google-backend: &ref_1
+        address: https://API_URL
+        deadline: 360
+        path_translation: APPEND_PATH_TO_ADDRESS
+  /partner/faces/byDate:
+    get:
+      operationId: PartnerFacesController_getPartnerInventoryByDate
+      parameters:
+        - example: '2021-12-24T13:45:00Z'
+          in: query
+          name: updated_after
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PartnerFaceData'
+                type: array
+          description: The face list has been retrieved successfully.
+      tags: &ref_0
+        - Partner
+      x-google-backend: *ref_1
+  /partner/faces/byId:
+    get:
+      operationId: PartnerFacesController_getPartnerInventoryByIds
+      parameters:
+        - example: 2938
+          explode: false
+          in: query
+          name: commb_face_id
+          required: true
+          schema:
+            items:
+              type: number
+            type: array
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PartnerFaceData'
+                type: array
+          description: The face list has been retrieved successfully.
+      tags: *ref_0
+      x-google-backend: *ref_1
+  /partner/faces/idsByDate:
+    get:
+      operationId: PartnerFacesController_getPartnerInventoryIdsByDate
+      parameters:
+        - example: '2021-12-24T13:45:00Z'
+          in: query
+          name: updated_after
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/PartnerFaceId'
+                type: array
+          description: The face list has been retrieved successfully.
+      tags: *ref_0
+      x-google-backend: *ref_1
+security:
+  - auth0_jwk: []
+  - bearer: []
+servers:
+  - url: 'https://staging.roadmap.commb.ca/services'
+    description: Staging Server
+tags: []
