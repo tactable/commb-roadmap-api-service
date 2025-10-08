@@ -78,8 +78,6 @@ components:
           type: string
         longitude:
           type: number
-        notes:
-          type: string
         num_of_spots:
           type: number
         placing:
