@@ -48,8 +48,6 @@ components:
             - NNW
             - N/A
           type: string
-        gender:
-          type: string
         height:
           type: number
         illumination_from:
@@ -72,10 +70,6 @@ components:
           type: number
         latitude:
           type: number
-        locale:
-          type: string
-        locator:
-          type: string
         longitude:
           type: number
         num_of_spots:
