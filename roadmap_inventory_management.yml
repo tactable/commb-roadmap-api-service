@@ -24,6 +24,7 @@ components:
       properties:
         address:
           type: string
+          description: "Required for place-based faces only."
         commb_location_id:
           type: number
         external_face_numeric:
@@ -54,6 +55,7 @@ components:
           maximum: 24
           minimum: 0
           type: number
+          description: "Not required for place-based faces. Required for all other types."
         illumination_status:
           enum:
             - Lit
@@ -505,6 +507,7 @@ components:
       properties:
         address:
           type: string
+          description: "Required for place-based faces only."
         external_face_numeric:
           type: string
         facing_direction:
@@ -533,6 +536,7 @@ components:
           maximum: 24
           minimum: 0
           type: number
+          description: "Not required for place-based faces. Required for all other types."
         illumination_status:
           enum:
             - Lit
