@@ -49,6 +49,7 @@ components:
             - NNW
             - N/A
           type: string
+          description: "Required for Outdoor only"
         height:
           type: number
         illumination_from:
@@ -530,13 +531,13 @@ components:
             - NNW
             - N/A
           type: string
+          description: "Required for Outdoor only"
         height:
           type: number
         illumination_from:
           maximum: 24
           minimum: 0
           type: number
-          description: "Not required for place-based faces. Required for all other types."
         illumination_status:
           enum:
             - Lit
