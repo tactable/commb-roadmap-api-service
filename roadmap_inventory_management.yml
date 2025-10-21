@@ -105,9 +105,6 @@ components:
       type: object
     CreateLocationDto:
       properties:
-        description:
-          maxLength: 255
-          type: string
         external_location_numeric:
           maxLength: 20
           type: string
@@ -508,12 +505,6 @@ components:
       properties:
         address:
           type: string
-        commb_location_id:
-          type: number
-        created_at:
-          type: string
-        created_by:
-          type: number
         external_face_numeric:
           type: string
         facing_direction:
@@ -535,8 +526,6 @@ components:
             - NW
             - NNW
             - N/A
-          type: string
-        gender:
           type: string
         height:
           type: number
@@ -566,12 +555,6 @@ components:
           type: string
         longitude:
           type: number
-        network_id:
-          type: number
-        no_circulation:
-          type: boolean
-        notes:
-          type: string
         num_of_spots:
           type: number
         placing:
@@ -592,16 +575,11 @@ components:
           type: string
         unit_of_measure:
           type: string
-        updated_by:
-          type: number
         width:
           type: number
       type: object
     UpdateLocationDto:
       properties:
-        description:
-          maxLength: 255
-          type: string
         external_location_numeric:
           maxLength: 20
           type: string
