@@ -549,10 +549,6 @@ components:
           type: number
         latitude:
           type: number
-        locale:
-          type: string
-        locator:
-          type: string
         longitude:
           type: number
         num_of_spots:
