@@ -1,0 +1,903 @@
+openapi: 3.0.0
+components:
+  schemas:
+    AggregateObject:
+      properties:
+        count:
+          type: number
+      type: object
+    CmaCaByCmaCaDto:
+      properties:
+        cmaname:
+          type: string
+      required:
+        - cmaname
+      type: object
+    CmaCaIdDto:
+      properties:
+        ca_cma_name:
+          type: string
+      required:
+        - ca_cma_name
+      type: object
+    CreateInventoryRequestBody:
+      properties:
+        address:
+          type: string
+          description: "Required for place-based faces only."
+        commb_location_id:
+          type: number
+        external_face_numeric:
+          type: string
+        facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
+          description: "Required for Outdoor only"
+        height:
+          type: number
+        illumination_from:
+          maximum: 24
+          minimum: 0
+          type: number
+          description: "Not required for place-based faces. Required for all other types."
+        illumination_status:
+          enum:
+            - Lit
+            - Unlit
+            - Partial
+          type: string
+        illumination_to:
+          maximum: 24
+          minimum: 0
+          type: number
+        is_trio:
+          maximum: 1
+          minimum: 0
+          type: number
+        latitude:
+          type: number
+        longitude:
+          type: number
+        num_of_spots:
+          type: number
+        placing:
+          maxLength: 1
+          minLength: 1
+          type: string
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Review
+            - Under Construction
+          type: string
+        unit_of_measure:
+          type: string
+        width:
+          type: number
+      required:
+        - external_face_numeric
+        - product_id
+        - illumination_status
+        - illumination_from
+        - illumination_to
+        - is_trio
+        - status
+      type: object
+    CreateLocationDto:
+      properties:
+        external_location_numeric:
+          maxLength: 20
+          type: string
+        latitude:
+          type: number
+        location_name:
+          maxLength: 1000
+          type: string
+        longitude:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Construction
+          type: string
+      required:
+        - external_location_numeric
+        - latitude
+        - longitude
+        - location_name
+      type: object
+    CsdByCsdDto:
+      properties:
+        csd_name:
+          type: string
+      required:
+        - csd_name
+      type: object
+    CsdUidDto:
+      properties:
+        csd_name:
+          type: string
+      required:
+        - csd_name
+      type: object
+    ImportFileDto:
+      properties:
+        file:
+          format: binary
+          type: string
+      required:
+        - file
+      type: object
+    InventoriesAggregateObject:
+      properties:
+        aggregate:
+          $ref: '#/components/schemas/AggregateObject'
+      type: object
+    InventoryDto:
+      properties:
+        address:
+          type: string
+        aims_circulation:
+          type: number
+        aims_ped_circulation:
+          type: number
+        aims_veh_circulation:
+          type: number
+        audience_profile:
+          type: number
+        calculation_version:
+          type: string
+        commb_face_id:
+          type: number
+        commb_location_id:
+          type: number
+        created_at:
+          type: string
+        created_by:
+          type: number
+        external_face_numeric:
+          type: string
+        facing_direction:
+          enum: &ref_5
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
+        gender:
+          type: string
+        height:
+          type: number
+        illumination_from:
+          maximum: 24
+          minimum: 0
+          type: number
+        illumination_status:
+          enum: &ref_6
+            - Lit
+            - Unlit
+            - Partial
+          type: string
+        illumination_to:
+          maximum: 24
+          minimum: 0
+          type: number
+        is_trio:
+          maximum: 1
+          minimum: 0
+          type: number
+        latitude:
+          type: number
+        locale:
+          type: string
+        locator:
+          type: string
+        longitude:
+          type: number
+        media_asset_url:
+          type: string
+        media_assets:
+          items:
+            type: object
+          type: array
+        network_id:
+          type: number
+        no_circulation:
+          type: boolean
+        notes:
+          type: string
+        num_of_spots:
+          type: number
+        organizationId:
+          type: number
+        organizationName:
+          type: string
+        physical_status:
+          type: string
+        placing:
+          maxLength: 1
+          minLength: 1
+          type: string
+        product_group_id:
+          type: number
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        status:
+          enum: &ref_7
+            - Active
+            - Estimate
+            - Disabled
+            - Under Review
+            - Under Construction
+          type: string
+        unit_of_measure:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+        width:
+          type: number
+      required:
+        - external_face_numeric
+        - product_id
+        - illumination_status
+        - illumination_from
+        - illumination_to
+        - is_trio
+        - status
+        - organizationName
+      type: object
+    LocationDto:
+      properties:
+        bearing:
+          enum:
+            - AT
+            - S/O
+            - W/O
+            - E/O
+            - N/O
+            - OPP
+            - AND
+          type: string
+        ca_cma_name:
+          type: string
+        cmaCaByCmaCa:
+          $ref: '#/components/schemas/CmaCaByCmaCaDto'
+        cma_ca:
+          type: number
+        cma_ca_id:
+          $ref: '#/components/schemas/CmaCaIdDto'
+        cma_ca_type:
+          maxLength: 3
+          type: string
+        commb_location_id:
+          type: number
+        coordinates:
+          type: object
+        created_at:
+          type: string
+        created_by:
+          type: number
+        created_by_user:
+          $ref: '#/components/schemas/UserDto'
+        cross_artery:
+          maxLength: 150
+          type: string
+        csd:
+          type: number
+        csdByCsd:
+          $ref: '#/components/schemas/CsdByCsdDto'
+        csd_name:
+          type: string
+        csduid:
+          $ref: '#/components/schemas/CsdUidDto'
+        description:
+          maxLength: 255
+          type: string
+        distance:
+          type: number
+        external_location_numeric:
+          maxLength: 20
+          type: string
+        geographic_code:
+          type: number
+        inventories_aggregate:
+          $ref: '#/components/schemas/InventoriesAggregateObject'
+        latitude:
+          type: number
+        location_name:
+          maxLength: 1000
+          type: string
+        longitude:
+          type: number
+        operator_id:
+          description: Foreign key, associates to id from organizations
+          type: number
+        player_network:
+          type: boolean
+        primary_artery:
+          maxLength: 150
+          type: string
+        primary_side:
+          enum:
+            - NS
+            - WS
+            - ES
+            - SS
+            - NWC
+            - NEC
+            - SWC
+            - SEC
+          type: string
+        province:
+          maxLength: 2
+          type: string
+        region:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Construction
+          type: string
+        timezone_id:
+          maxLength: 20
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+        updated_by_user:
+          $ref: '#/components/schemas/UserDto'
+      required:
+        - commb_location_id
+        - external_location_numeric
+        - location_name
+        - operator_id
+        - latitude
+        - longitude
+        - region
+        - cma_ca
+        - cma_ca_type
+        - cmaCaByCmaCa
+        - csdByCsd
+        - geographic_code
+        - csd
+        - status
+        - csd_name
+        - ca_cma_name
+        - updated_at
+        - created_at
+        - cma_ca_id
+        - csduid
+        - created_by_user
+        - updated_by_user
+        - player_network
+      type: object
+    OrganizationDto:
+      properties:
+        id:
+          type: number
+        name:
+          type: string
+        status:
+          enum:
+            - Active
+            - Disabled
+          type: string
+        type:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - name
+        - type
+        - status
+      type: object
+    ProductDTO:
+      properties:
+        __typename:
+          type: string
+        active:
+          type: boolean
+        buffer_radius:
+          type: number
+        created_at:
+          type: string
+        created_by:
+          type: number
+        is_digital:
+          type: boolean
+        product_group:
+          $ref: '#/components/schemas/ProductProductGroup'
+        product_group_id:
+          type: number
+        product_id:
+          type: number
+        product_name:
+          type: string
+        product_name_fr:
+          type: string
+        size:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+      required:
+        - product_id
+        - product_name
+        - product_name_fr
+        - buffer_radius
+        - size
+        - product_group_id
+        - product_group
+        - is_digital
+        - active
+        - created_by
+        - created_at
+        - __typename
+      type: object
+    ProductProductGroup:
+      properties:
+        __typename:
+          type: string
+        active:
+          type: boolean
+        created_at:
+          type: string
+        created_by:
+          type: number
+        media_type_id:
+          type: number
+        product_group_id:
+          type: number
+        product_group_name:
+          type: string
+        product_group_name_fr:
+          type: string
+        updated_at:
+          type: string
+        updated_by:
+          type: number
+      type: object
+    UpdateInventoryRequestBody:
+      properties:
+        address:
+          type: string
+          description: "Required for place-based faces only."
+        external_face_numeric:
+          type: string
+        facing_direction:
+          enum:
+            - 'N'
+            - NE
+            - NNE
+            - ENE
+            - E
+            - ESE
+            - SE
+            - SSE
+            - S
+            - SSW
+            - SW
+            - WSW
+            - W
+            - WNW
+            - NW
+            - NNW
+            - N/A
+          type: string
+          description: "Required for Outdoor only"
+        height:
+          type: number
+        illumination_from:
+          maximum: 24
+          minimum: 0
+          type: number
+        illumination_status:
+          enum:
+            - Lit
+            - Unlit
+            - Partial
+          type: string
+        illumination_to:
+          maximum: 24
+          minimum: 0
+          type: number
+        is_trio:
+          maximum: 1
+          minimum: 0
+          type: number
+        latitude:
+          type: number
+        longitude:
+          type: number
+        num_of_spots:
+          type: number
+        placing:
+          maxLength: 1
+          minLength: 1
+          type: string
+        product_id:
+          type: number
+        spot_time:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Review
+            - Under Construction
+          type: string
+        unit_of_measure:
+          type: string
+        width:
+          type: number
+      type: object
+    UpdateLocationDto:
+      properties:
+        external_location_numeric:
+          maxLength: 20
+          type: string
+        latitude:
+          type: number
+        location_name:
+          maxLength: 1000
+          type: string
+        longitude:
+          type: number
+        operator_id:
+          type: number
+        status:
+          enum:
+            - Active
+            - Estimate
+            - Disabled
+            - Under Construction
+          type: string
+      type: object
+    UserDto:
+      properties:
+        auth0_id:
+          type: string
+        auth0_status:
+          enum:
+            - Sync
+            - Error
+          type: string
+        email_address:
+          maxLength: 50
+          type: string
+        environment_access:
+          items:
+            type: string
+          type: array
+        first_name:
+          maxLength: 50
+          type: string
+        hubspot_id:
+          type: string
+        id:
+          type: number
+        last_name:
+          maxLength: 50
+          type: string
+        organization:
+          description: Foreign key, associates to id from organizations
+          type: number
+        organizationByOrganization:
+          $ref: '#/components/schemas/UserOrganizationDto'
+        role:
+          $ref: '#/components/schemas/UserRoleDto'
+        role_name:
+          type: string
+        status:
+          enum:
+            - Active
+            - Disabled
+          maxLength: 10
+          type: string
+        user_role:
+          description: Foreign key, associates to id from roles
+          type: number
+      required:
+        - first_name
+        - last_name
+        - email_address
+        - user_role
+        - organization
+        - status
+        - id
+        - hubspot_id
+      type: object
+    UserOrganizationDto:
+      properties:
+        name:
+          type: string
+      required:
+        - name
+      type: object
+    UserRoleDto:
+      properties:
+        name:
+          type: string
+      required:
+        - name
+      type: object
+  securitySchemes:
+    auth0_jwk:
+      flows:
+        implicit:
+          authorizationUrl: ''
+          scopes:
+            all: all
+      type: oauth2
+      x-google-audiences: AUTH0_AUDIENCE
+      x-google-issuer: https://AUTH0_ACCOUNT_NAME.auth0.com/
+      x-google-jwks_uri: https://AUTH0_ACCOUNT_NAME.auth0.com/.well-known/jwks.json
+    bearer:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+info:
+  contact: {}
+  description: APIs used to programmatically manage inventory (add new, edit existing, delete etc.)
+  title: Roadmap Inventory Management API
+  version: 'beta-0.4'
+paths:
+  /face:
+    post:
+      operationId: FaceController_addInventoryToLocation
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateInventoryRequestBody'
+        required: true
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: &ref_3
+        - Inventory
+      x-google-backend: &ref_1
+        address: https://API_URL
+        deadline: 360
+        path_translation: APPEND_PATH_TO_ADDRESS
+  /face/{id}:
+    get:
+      operationId: FaceController_getInventoryById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_3
+      x-google-backend: *ref_1
+    patch:
+      operationId: FaceController_updateInventory
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateInventoryRequestBody'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InventoryDto'
+          description: ''
+        '201':
+          description: The inventory has been updated Successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_3
+      x-google-backend: *ref_1
+  /face/{id}/media:
+    post:
+      operationId: FaceController_uploadMedia
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ImportFileDto'
+        description: Media Asset Upload
+        required: true
+      responses:
+        '201':
+          description: ''
+        '400':
+          description: ''
+      tags: *ref_3
+      x-google-backend: *ref_1
+  /locations:
+    post:
+      operationId: LocationController_createLocation
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLocationDto'
+        required: true
+      responses:
+        '201':
+          description: The location has been successfully created.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: &ref_2
+        - Locations
+      x-google-backend: *ref_1
+  /locations/{commb_location_id}:
+    get:
+      operationId: LocationController_getLocationById
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: The location has been retrieved successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+      tags: *ref_2
+      x-google-backend: *ref_1
+    patch:
+      operationId: LocationController_updateLocation
+      parameters:
+        - in: path
+          name: commb_location_id
+          required: true
+          schema:
+            type: number
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLocationDto'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationDto'
+          description: ''
+        '201':
+          description: The location has been updated successfully.
+        '400':
+          description: ''
+        '403':
+          description: ''
+        '409':
+          description: Location already exist with the provided commb location id
+      tags: *ref_2
+      x-google-backend: *ref_1
+  /organizations:
+    get:
+      operationId: OrganizationController_getOrganizations
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/OrganizationDto'
+                type: array
+          description: ''
+      tags:
+        - Organizations
+      x-google-backend: *ref_1
+  /product:
+    get:
+      operationId: ProductController_getProducts
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ProductDTO'
+                type: array
+          description: ''
+        '400':
+          description: Bad Request.
+        '403':
+          description: Forbidden.
+      tags: &ref_0
+        - Product
+      x-google-backend: *ref_1
+security:
+  - auth0_jwk: []
+  - bearer: []
+servers:
+  - url: 'https://staging.roadmap.commb.ca/services'
+    description: Staging Server
+tags: []
